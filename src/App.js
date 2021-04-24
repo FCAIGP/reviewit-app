@@ -6,7 +6,7 @@ import {getAllCompanies} from './utils/api';
 class App extends Component {
   componentDidMount () {
     alert("hello");
-    console.log(getAllCompanies());
+    getAllCompanies().then(v=>console.log(v));
   }
   render () {
     return (

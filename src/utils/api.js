@@ -1,7 +1,7 @@
 const api = "https://localhost:44300/api";
 
 const headers = {
-    'Accept': 'application/json'
+    'Accept': 'application/json'    
 };
 
 export const getAllCompanies = () =>
