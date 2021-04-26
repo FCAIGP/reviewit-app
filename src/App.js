@@ -1,30 +1,22 @@
-import logo, { ReactComponent } from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Component } from 'react';
-import {getAllCompanies} from './utils/api';
+import BootstrapNav from './components/BootstrapNav';
+import CompanyPages from './components/CompanyPages';
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 class App extends Component {
-  componentDidMount () {
-    alert("hello");
-    getAllCompanies().then(v=>console.log(v));
-  }
   render () {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <BrowserRouter>
+        <BootstrapNav/>
+        <div>
+          <Switch>
+            <Route exact path="/company" component={CompanyPages}></Route>
+          </Switch>
+        </div>
+        </BrowserRouter>
       </div>
     );
   }
