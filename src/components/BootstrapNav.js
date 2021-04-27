@@ -1,6 +1,6 @@
 import {Navbar, Nav} from 'react-bootstrap'
 import React from 'react'
-import {Link, NavLink} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 const BootstrapNav = () => {
     return (
       <Navbar bg="dark" variant="dark" expand="lg">

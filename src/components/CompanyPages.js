@@ -1,8 +1,7 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
 import {Table} from 'react-bootstrap'
-import {Route, Link} from 'react-router-dom'
-import CompanyDetails from './CompanyDetails'
+import {Link} from 'react-router-dom'
 
 const CompanyPages = () => {
 
@@ -27,6 +26,8 @@ const CompanyPages = () => {
                 <thead>
                     <tr>
                         <th>Company Name</th>
+                        <th>Headquarters</th>
+                        <th>Region</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -34,16 +35,16 @@ const CompanyPages = () => {
                     {companies.map((company) => (
                         <tr key={company.companyId}>
                             <td>{company.name}</td>
+                            <td>{company.headquarters}</td>
+                            <td>{company.region}</td>
                             <td>
-                            <Link to={`${'company'}/${company.companyId}`}>View</Link>
+                            <Link to={`/company/${company.companyId}`}>View</Link>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
-            <Route path={`${'company'}/:productId`}>
-                <CompanyDetails data={companies} />
-            </Route>
+            
         </div>
     )
 }
