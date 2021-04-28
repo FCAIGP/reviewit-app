@@ -2,19 +2,18 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import {Table} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
+import  {getAllCompanies} from '../utils/api'
 
 const CompanyPages = () => {
 
 
     const [companies, setCompanies] = useState([]);
 
-    //TODO (abdelrahman): try to use api call in api.js file 'getAllCompanies'
+    
     const fetchCompanies = async ()=>{
-        const response = await fetch("https://localhost:44300/api/company");
-        const data = await response.json()
-        setCompanies(data);
-        // console.log(data);
-        // console.log(companies);
+        getAllCompanies().then(function(response){
+            setCompanies(response)
+        })
     }
 
     useEffect(() => {
