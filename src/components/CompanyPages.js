@@ -5,8 +5,10 @@ import {Link} from 'react-router-dom'
 
 const CompanyPages = () => {
 
+
     const [companies, setCompanies] = useState([]);
 
+    //TODO (abdelrahman): try to use api call in api.js file 'getAllCompanies'
     const fetchCompanies = async ()=>{
         const response = await fetch("https://localhost:44300/api/company");
         const data = await response.json()

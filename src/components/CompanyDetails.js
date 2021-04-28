@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 
 const CompanyDetails = ({match}) => {
 
+    //TODO (abdelrahman): try to use api call in api.js file 'getCompany'
     const [company, setCompany] = useState({})
 
     const fetchCompany = async () =>{
