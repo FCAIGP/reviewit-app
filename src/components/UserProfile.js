@@ -1,9 +1,27 @@
 import React from 'react'
+import {useState, useEffect} from 'react'
+import {getUser} from '../utils/api'
+
 function UserProfile({match}){
-    //TODO (abdelrahman) (if you can): implement userProfile
-    //at start, use api call getUser, you give it id, it gives you user info (remember to pull backend changes)
-    //access by url '/profile/{id}' or click on 'Hello LoggedInUser' in navbar
-    return(<div>User profile goes here, to be done!</div>)
+    const [userInfo, setUser] = useState([])
+    const fetchUser = async ()=>{
+        getUser(match.params.userId).then(function(response){
+            setUser(response)
+        })
+    }
+    
+    useEffect(() => {
+        fetchUser()
+      }, []);
+
+    return (
+        <div>
+            <p> First Name: {userInfo.firstName} </p>
+            <p> Last Name: {userInfo.lastName} </p>
+            <p> Current Job: {userInfo.currentJob} </p>
+            <p> Date hired: {userInfo.dateHired} </p>
+            <p> Bio: {userInfo.bio} </p>
+        </div>)
 }
 
 export default UserProfile;
