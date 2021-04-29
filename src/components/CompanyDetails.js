@@ -1,24 +1,17 @@
-import React from 'react'
-import {useEffect, useState} from 'react'
-import  {getCompany} from '../utils/api'
+import React, {useEffect, useState} from 'react'
+import {getCompany} from '../utils/api'
 
 const CompanyDetails = ({match}) => {
 
     const [company, setCompany] = useState({})
 
-    const fetchCompany = async () =>{
-      getCompany(match.params.companyId).then(function(response){
-        setCompany(response)
-      })
-    }
-
     useEffect(() => {
-        fetchCompany()
-      }, []);
+        getCompany(match.params.companyId).then(res => setCompany(res));
+    });
 
     return (
         <div>
-          <h1>Company Details</h1>
+            <h1>Company Details</h1>
             <p>Name: {company.name}</p>
             <p>Headquarters: {company.headquarters}</p>
             <p>Industry: {company.industry}</p>
