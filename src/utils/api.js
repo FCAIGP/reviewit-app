@@ -1,5 +1,5 @@
-const api = "https://localhost:44300/api";
-const auth = "https://localhost:44300/authenticate";
+const api = "/api";
+const auth = "/auth";
 
 const InitGet = (token = null) => ({
     method: 'get',
