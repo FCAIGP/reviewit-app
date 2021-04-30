@@ -1,18 +1,12 @@
-import React from 'react'
-import {useState, useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {getUser} from '../utils/api'
 
-function UserProfile({match}){
+function UserProfile({match}) {
     const [userInfo, setUser] = useState([])
-    const fetchUser = async ()=>{
-        getUser(match.params.userId).then(function(response){
-            setUser(response)
-        })
-    }
-    
+
     useEffect(() => {
-        fetchUser()
-      }, []);
+        getUser(match.params.userId).then(res => setUser(res));
+    }, [match.params.userId]);
 
     return (
         <div>

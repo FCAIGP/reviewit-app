@@ -13,7 +13,7 @@ class ReviewItNavbar extends Component {
     };
 
     render() {
-        const {loggedIn, fullName, userId} = this.props;
+        const {loggedIn, isAdmin, fullName, userId} = this.props;
         return (
             <Navbar bg="dark" variant="dark" expand="lg">
                 <Navbar.Brand href="/">ReviewIt</Navbar.Brand>
@@ -22,6 +22,7 @@ class ReviewItNavbar extends Component {
                     <Nav className="mr-auto">
                         <Nav.Link as={Link} to="/">Home</Nav.Link>
                         <Nav.Link as={Link} to="/company">Company List</Nav.Link>
+                        {isAdmin && <Nav.Link as={Link} to="/claimrequest">Claim Requests</Nav.Link>}
                     </Nav>
                     {loggedIn ? <Nav>
                         <Nav.Link as={Link} to={`/profile/${userId}`}>Hello {fullName}</Nav.Link>
@@ -38,10 +39,9 @@ class ReviewItNavbar extends Component {
 }
 
 export default withRouter(connect(({authedUser}) => {
-    const {userInfo} = authedUser;
-    console.log(userInfo);
+    const {userInfo, isAdmin} = authedUser;
     if (!userInfo)
         return {loggedIn: false};
     else
-        return {loggedIn: true, fullName: userInfo.firstName + ' ' + userInfo.lastName, userId: userInfo.userId};
+        return {isAdmin: isAdmin, loggedIn: true, fullName: userInfo.firstName + ' ' + userInfo.lastName, userId: userInfo.userId};
 })(ReviewItNavbar));

@@ -1,27 +1,25 @@
 import {login} from '../utils/api';
 
 export const SET_AUTHED_USER = 'SET_AUTHED_USER';
+export const CLEAR_AUTHED_USER = 'CLEAR_AUTHED_USER';
 
-export function setAuthedUser(userInfo, token) {
+export function setAuthedUser(data) {
     return {
         type: SET_AUTHED_USER,
-        userInfo,
-        token
+        data
     }
 }
 
 export function clearAuthedUser() {
     return {
-        type: SET_AUTHED_USER,
-        userInfo: null,
-        token: null
+        type: CLEAR_AUTHED_USER
     }
 }
 
 export function handleLogin(name, pass, keep, onSucceed = null, onFail = null) {
     return (dispatch) => {
-        login(name, pass).then(({userInfo, token}) => {
-            dispatch(setAuthedUser(userInfo, token));
+        login(name, pass).then(res => {
+            dispatch(setAuthedUser(res));
             if (onSucceed)
                 return onSucceed();
         }).catch((e) => onFail && onFail(e));

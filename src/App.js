@@ -7,6 +7,7 @@ import CompanyDetails from './components/CompanyDetails'
 import Login from './components/Login';
 import UserProfile from './components/UserProfile';
 import Home from './components/Home';
+import ClaimRequestList from "./components/ClaimRequestList";
 
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
@@ -23,6 +24,7 @@ class App extends Component {
                             <Route exact path="/company" component={CompanyPages}/>
                             <Route path="/company/:companyId" component={CompanyDetails}/>
                             <Route path="/profile/:userId" component={UserProfile}/>
+                            <Route exact path="/claimrequest" component={ClaimRequestList}/>
                         </Switch>
                     </div>
                 </BrowserRouter>
