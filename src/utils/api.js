@@ -19,6 +19,15 @@ const InitPost = (body, token = null) => ({
     body: JSON.stringify(body)
 });
 
+const InitPut = (token) => ({
+    method: 'put',
+    headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : null
+    }
+});
+
 
 function fetchRequest(input, init = null) {
     return fetch(input, init)
@@ -52,3 +61,6 @@ export const getAllCompanies = () =>
 
 
 export const getAllClaimRequests = (token) => fetchRequest(`${api}/claimrequest`, InitGet(token));
+
+export const acceptClaimRequest = (id, token) => fetchRequest(`${api}/ClaimRequest/${id}/accept`, InitPut(token));
+export const rejectClaimRequest = (id, token) => fetchRequest(`${api}/ClaimRequest/${id}/reject`, InitPut(token));
