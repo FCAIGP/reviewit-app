@@ -7,7 +7,7 @@ const CompanyDetails = ({match}) => {
 
     useEffect(() => {
         getCompany(match.params.companyId).then(res => setCompany(res));
-    });
+    },[match.params.companyId]);
 
     return (
         <div>

@@ -6,7 +6,7 @@ function UserProfile({match}) {
 
     useEffect(() => {
         getUser(match.params.userId).then(res => setUser(res));
-    });
+    }, [match.params.userId]);
 
     return (
         <div>

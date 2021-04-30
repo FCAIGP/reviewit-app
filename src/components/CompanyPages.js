@@ -11,7 +11,7 @@ const CompanyPages = () => {
 
     useEffect(() => {
         getAllCompanies().then(res => setCompanies(res));
-    });
+    },[]);
 
     return (
         <div>
