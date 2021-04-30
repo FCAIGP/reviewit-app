@@ -4,8 +4,6 @@ import {handleLogin} from "../actions/authedUser";
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
 
-//TODO (Abdelrahman): beautify page
-
 function Login(props) {
     const [name, setName] = React.useState("");
     const [pass, setPass] = React.useState("");
