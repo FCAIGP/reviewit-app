@@ -21,7 +21,7 @@ const InitPost = (body, token = null) => ({
 
 const InitPut = (token) => ({
     method: 'put',
-    headers:{
+    headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': token ? `Bearer ${token}` : null
@@ -37,27 +37,31 @@ function fetchRequest(input, init = null) {
         });
 }
 
+const tokenResponseToState = ({userId, token}) => Promise.all([getUser(userId), isAdmin(token), token])
+    .then(([userInfo, isAdmin, token]) => ({userInfo, isAdmin, token}));
+
 //--------------------------------------------------------------------------------------------------
 
 export const login = (username, password) =>
     fetchRequest(`${auth}/login`, InitPost({username, password}))
-        .then(({userId, token}) => Promise.all([getUser(userId), isAdmin(token), token]))
-        .then(([userInfo, isAdmin, token]) => ({userInfo, isAdmin, token}));
+        .then(tokenResponseToState);
+
+export const renewToken = () => fetchRequest(`${auth}/refresh-token`, InitGet())
+    .then(tokenResponseToState);
 
 export const getUser = (id) => fetchRequest(`${api}/user/${id}`, InitGet())
     .then(ret => ({...ret, userId: id}));
 
+export const isUser = (token) => fetch(`${auth}/isuser`, InitGet(token))
+    .then(res => res.ok)
+
 export const isAdmin = (token) => fetch(`${auth}/isadmin`, InitGet(token))
     .then(res => res.ok);
-
-
-
 
 export const getCompany = (id) => fetchRequest(`${api}/company/${id}`, InitGet());
 
 export const getAllCompanies = () =>
     fetchRequest(`${api}/company`, InitGet());
-
 
 
 export const getAllClaimRequests = (token) => fetchRequest(`${api}/claimrequest`, InitGet(token));
