@@ -1,9 +1,8 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { HomeContainter , HomeBg , VideoBg , HomeContent , HomeH1 , HomeP} from './HomeElement';
 import Video from '../assets/video.mp4';
 import InfoSection from './InfoSection';
-import { homeObjOne } from './Home_Data';
+import { homeObjOne , homeObjTwo } from './HomeData';
 //TODO (Sisy): design homepage
 
 function Home() {
@@ -22,6 +21,7 @@ function Home() {
                 </HomeContent>
             </HomeContainter>
             <InfoSection {...homeObjOne}/>
+            <InfoSection {...homeObjTwo}/>
         </>
     );
 }
