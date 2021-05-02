@@ -5,7 +5,6 @@ import Video from '../assets/video_404.mp4';
 const page404 = () => {
     return (
         <>
-            <h1>hello</h1>
             <HomeContainter>
                 <HomeBg>
                     <VideoBg autoPlay loop muted src={Video} type='video/mp4'/>

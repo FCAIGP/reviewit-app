@@ -1,7 +1,6 @@
 import React from 'react'
 import { Column1, Column2, Heading, InfoContainer, InfoRow, InfoWrapper, Subtitle, TextWrapper, TopLine , ImgWrap , Img } from './InfoElement';
-import img1 from '../assets/img1.svg';
-const InfoSection = ({id , lightBg , lightText , lightTextDesc , topLine , headLine , describtion , imgStart , alt , darkText}) => {
+const InfoSection = ({id , lightBg , lightText , lightTextDesc , topLine , headLine , describtion , imgStart , alt , img , darkText}) => {
     return (
         <>
             <InfoContainer lightBg={lightBg} id={id}>
@@ -16,7 +15,7 @@ const InfoSection = ({id , lightBg , lightText , lightTextDesc , topLine , headL
                         </Column1>
                         <Column2>
                             <ImgWrap>
-                                <Img src={img1} alt={alt}/>
+                                <Img src={img} alt={alt}/>
                             </ImgWrap>
                         </Column2>
                     </InfoRow>
