@@ -8,10 +8,16 @@ import Login from './components/Login';
 import UserProfile from './components/UserProfile';
 import Home from './components/Home';
 import ClaimRequestList from "./components/ClaimRequestList";
-
+import {connect} from 'react-redux';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {handleRenewToken} from './actions/authedUser';
 
 class App extends Component {
+
+    componentDidMount() {
+        this.props.dispatch(handleRenewToken());
+    }
+
     render() {
         return (
             <div className="App">
@@ -33,4 +39,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default connect()(App);
