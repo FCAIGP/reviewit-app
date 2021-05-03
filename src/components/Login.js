@@ -1,8 +1,10 @@
 import React from 'react';
-import {Button, Container, Form} from 'react-bootstrap';
+import {Button, Container, Form, Toast} from 'react-bootstrap';
 import {handleLogin} from "../actions/authedUser";
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login(props) {
     const [name, setName] = React.useState("");
@@ -17,14 +19,18 @@ function Login(props) {
             history.push('/');
         }, (e) => {
             //TODO (Abdelrahman): clear password, show error, etc...
-            alert("bad login attempt");
-            alert(e);
+            toast.error('Bad Login attempt, kindly re-check your credentials!', {position:toast.POSITION.TOP_CENTER})
+            //alert("bad login attempt");
+            //alert(e);
         }));
     };
+
+
     if(loggedIn) return <Redirect to='/'/>;
 
     return (
         <div>
+            <ToastContainer autoClose={3000} />
             <Container>
                 <Form>
                     <Form.Group>
@@ -52,6 +58,8 @@ function Login(props) {
                     </Button>
                 </Form>
             </Container>
+
+            
         </div>
     );
 }
