@@ -57,7 +57,6 @@ function Login(props) {
 }
 
 export default connect((state) => {
-    console.log(state);
     const {authedUser} = state;
     return ({loggedIn: !!authedUser.userInfo});
 })(Login);

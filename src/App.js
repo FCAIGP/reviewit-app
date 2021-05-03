@@ -5,6 +5,7 @@ import ReviewItNavbar from './components/ReviewItNavbar';
 import CompanyPages from './components/CompanyPages';
 import CompanyDetails from './components/CompanyDetails'
 import Login from './components/Login';
+import Register from './components/Register';
 import UserProfile from './components/UserProfile';
 import Home from './components/Home';
 import ClaimRequestList from "./components/ClaimRequestList";
@@ -27,6 +28,7 @@ class App extends Component {
                         <Switch>
                             <Route exact path="/" component={Home}/>
                             <Route exact path="/login" component={Login}/>
+                            <Route exact path="/register" component={Register}/>
                             <Route exact path="/company" component={CompanyPages}/>
                             <Route path="/company/:companyId" component={CompanyDetails}/>
                             <Route path="/profile/:userId" component={UserProfile}/>

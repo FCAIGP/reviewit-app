@@ -33,6 +33,7 @@ function fetchRequest(input, init = null) {
     return fetch(input, init)
         .then(res => {
             if (res.ok) return res.json();
+            res.json().then(v=>console.log(v));
             throw new Error('API did not return an OK result.');
         });
 }
@@ -45,6 +46,8 @@ const tokenResponseToState = ({userId, token}) => Promise.all([getUser(userId), 
 export const login = (username, password) =>
     fetchRequest(`${auth}/login`, InitPost({username, password}))
         .then(tokenResponseToState);
+
+export const register = (dto) => fetchRequest(`${auth}/register`, InitPost(dto));
 
 export const renewToken = () => fetchRequest(`${auth}/refresh-token`, InitGet())
     .then(tokenResponseToState);

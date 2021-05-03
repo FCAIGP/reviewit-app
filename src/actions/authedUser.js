@@ -1,4 +1,4 @@
-import {login, renewToken} from '../utils/api';
+import {login, register, renewToken} from '../utils/api';
 
 export const SET_AUTHED_USER = 'SET_AUTHED_USER';
 export const CLEAR_AUTHED_USER = 'CLEAR_AUTHED_USER';
@@ -29,5 +29,11 @@ export function handleLogin(name, pass, keep, onSucceed = null, onFail = null) {
             if (onSucceed)
                 return onSucceed();
         }).catch((e) => onFail && onFail(e));
+    };
+}
+
+export function handleRegister(dto, onSucceed = null, onFail = null){
+    return (dispatch) => {
+        register(dto).then(() => onSucceed && onSucceed()).catch((e) => onFail && onFail(e));
     };
 }
