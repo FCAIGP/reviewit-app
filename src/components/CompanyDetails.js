@@ -1,13 +1,15 @@
 import {Button} from 'react-bootstrap'
 import React, {useEffect, useState} from 'react'
-import {getCompany, getPosts, deletePost} from '../utils/api'
+import {getCompany, getPosts, deletePost, getUser} from '../utils/api'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-
+import {Spinner} from 'react-bootstrap'
 const CompanyDetails = ({match, token, isAdmin}) => {
 
     const [company, setCompany] = useState({})
     const [posts, setPosts] = useState([])
+    const [loading, setLoading] = useState(true)
+    
 
     function handlePostDelete(postId){
         deletePost(postId, token).then(v => console.log(v))
@@ -16,12 +18,15 @@ const CompanyDetails = ({match, token, isAdmin}) => {
     useEffect(() => {
         getCompany(match.params.companyId).then(res => setCompany(res));
         getPosts(match.params.companyId).then(res => setPosts(res));
-        // console.log(window.location.pathname);
+        setLoading(false)
     },[match.params.companyId]);
 
-    
     return (
+        
+        
         <div>
+            {/* todo : adjust loading spinner place */}
+            {loading ? <Spinner animation="border" /> : <></>}
             <h1>Company Details</h1>
             <p>Name: {company.name}</p>
             <p>Headquarters: {company.headquarters}</p>
