@@ -2,7 +2,7 @@ import React from 'react';
 import { HomeContainter , HomeBg , VideoBg , HomeContent , HomeH1 , HomeP} from './HomeElement';
 import Video from '../assets/video.mp4';
 import InfoSection from './InfoSection';
-import { homeObjOne , homeObjTwo } from './HomeData';
+import { homeObjOne , homeObjTwo , homeObjThree } from './HomeData';
 //TODO (Sisy): design homepage
 
 function Home() {
@@ -22,6 +22,7 @@ function Home() {
             </HomeContainter>
             <InfoSection {...homeObjOne}/>
             <InfoSection {...homeObjTwo}/>
+            <InfoSection {...homeObjThree}/>
         </>
     );
 }
