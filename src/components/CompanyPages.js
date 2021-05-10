@@ -2,19 +2,23 @@ import React, {useEffect, useState} from 'react'
 import {Table} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 import {getAllCompanies} from '../utils/api'
+import {Spinner} from 'react-bootstrap'
 
 const CompanyPages = () => {
 
 
     const [companies, setCompanies] = useState([]);
-
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         getAllCompanies().then(res => setCompanies(res));
+        setLoading(false)
     },[]);
 
     return (
         <div>
+            {/* todo : adjust loading spinner place */}
+            {loading ? <Spinner animation="border" /> : <></>}
             <h1>Company List</h1>
             <Table borderless>
                 <thead>

@@ -3,11 +3,11 @@ import {Table} from 'react-bootstrap'
 import {getAllClaimRequests, acceptClaimRequest, rejectClaimRequest} from '../utils/api'
 import {connect} from 'react-redux'
 import {Redirect} from "react-router-dom";
-
+import {Spinner} from 'react-bootstrap'
 const ClaimRequestList = ({token, isAdmin}) => {
 
     const [claimRequests, setClaimRequests] = useState([]);
-
+    const [loading, setLoading] = useState(true)
 
     function Accept(id){
          acceptClaimRequest(id, token).then(v => alert(v.message))
@@ -20,6 +20,7 @@ const ClaimRequestList = ({token, isAdmin}) => {
     useEffect(() => {
         if (!token || !isAdmin) return;
         getAllClaimRequests(token).then(res => setClaimRequests(res)).catch(e=>alert(e));
+        setLoading(false)
     }, [token, isAdmin]);
     if (!token || !isAdmin) return <Redirect to='/'/>;
     
@@ -27,6 +28,8 @@ const ClaimRequestList = ({token, isAdmin}) => {
 
     return (
         <div>
+            {/* todo : adjust loading spinner place */}
+            {loading ? <Spinner animation="border" /> : <></>}
             <h1>Claim Requests</h1>
             <Table borderless>
                 <thead>
