@@ -12,7 +12,9 @@ const CompanyDetails = ({match, token, isAdmin}) => {
     
 
     function handlePostDelete(postId){
+        //TODO: nadaf
         deletePost(postId, token).then(v => console.log(v))
+        setPosts(posts.filter(p => p.id !== postId))
     }
 
     useEffect(() => {

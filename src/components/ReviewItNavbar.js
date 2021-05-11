@@ -1,14 +1,14 @@
 import {Nav, Navbar} from 'react-bootstrap'
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
-import {clearAuthedUser} from "../actions/authedUser";
+import {handleLogout} from "../actions/authedUser";
 import {connect} from 'react-redux';
 class ReviewItNavbar extends Component {
     logOut_click = (e) => {
         e.preventDefault();
 
         const {dispatch, history} = this.props;
-        dispatch(clearAuthedUser());
+        dispatch(handleLogout());
         history.push('/login');
     };
 
