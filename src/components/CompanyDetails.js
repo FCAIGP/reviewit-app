@@ -1,23 +1,42 @@
 import {Button} from 'react-bootstrap'
 import React, {useEffect, useState} from 'react'
-import {getCompany, getPosts, deletePost, getUser} from '../utils/api'
+import {getCompany, getPosts, deletePost, addPost} from '../utils/api'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {Spinner} from 'react-bootstrap'
-const CompanyDetails = ({match, token, isAdmin}) => {
+import {Spinner, Modal, Form} from 'react-bootstrap'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const CompanyDetails = ({match, token, userId}) => {
 
     const [company, setCompany] = useState({})
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true)
     
 
+    const [show, setShow] = useState(false)
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    
+    // add post
+    const [text, setText] = useState("")
+    const [images, setImages] = useState("")
+
+    const handleAddPost = (e) =>{
+        e.preventDefault();
+        addPost(text, images.split('\s*,\s*'), match.params.companyId, token).then(v => setPosts(posts => [...posts, v]))
+        handleClose()
+        toast.success("Added Post Successfully!", {position:toast.POSITION.TOP_CENTER})
+    }
+    
     function handlePostDelete(postId){
-        //TODO: nadaf
-        deletePost(postId, token).then(v => console.log(v))
-        setPosts(posts.filter(p => p.id !== postId))
+        deletePost(postId, token).then(v => setPosts(posts => posts.filter(p => p.postId != postId)))
+        toast.error("Post has been Deleted!",{position:toast.POSITION.TOP_CENTER})
     }
 
     useEffect(() => {
+        console.log(userId)
         getCompany(match.params.companyId).then(res => setCompany(res));
         getPosts(match.params.companyId).then(res => setPosts(res));
         setLoading(false)
@@ -25,8 +44,8 @@ const CompanyDetails = ({match, token, isAdmin}) => {
 
     return (
         
-        
         <div>
+            <ToastContainer autoClose={3000} />
             {/* todo : adjust loading spinner place */}
             {loading ? <Spinner animation="border" /> : <></>}
             <h1>Company Details</h1>
@@ -41,7 +60,29 @@ const CompanyDetails = ({match, token, isAdmin}) => {
             <p>Close Status: {company.closeStatus}</p>
             <br/>
         
-            <Link to={`${window.location.pathname}/addPost`}>Add Post</Link>
+            {
+                userId == company.ownerId ?  <button onClick={handleShow}> Add Post</button> : <></>
+            }
+
+            <Modal show = {show} onHide = {handleClose}>
+                <Form>
+                    <Form.Group>
+                        <Form.Label>Text</Form.Label>
+                        <Form.Control as="textarea" rows={3} onChange={e => setText(e.target.value)} />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>Images</Form.Label>
+                        <Form.Control type="text" placeholder="array of strings for now"
+                            onChange={e => setImages(e.target.value)} />
+                    </Form.Group>
+
+                    <Button variant="primary" type="submit" onClick={handleAddPost}>
+                        Submit
+                </Button>
+                </Form>
+            </Modal>
+
             <br/>
             <h1>Posts</h1>
             <br/>
@@ -51,8 +92,16 @@ const CompanyDetails = ({match, token, isAdmin}) => {
                     <p>Text: {post.text}</p>
                     <p>Images: {post.images}</p>
                     <p>Created Date: {post.createdDate}</p>
-                    <Link to={`${window.location.pathname}/updatePost/${post.postId}`} variant="primary">Update</Link>
-                    <Button onClick={() => handlePostDelete(post.postId)} variant="danger">Delete</Button>
+
+                    {
+                        userId == company.ownerId ?
+                        <div>
+
+                        <Link to={{pathname:`${window.location.pathname}/updatePost/${post.postId}`, text: post.text, images:post.images}} variant="primary">Update</Link>
+                        <Button onClick={() => handlePostDelete(post.postId)} variant="danger">Delete</Button> </div>:
+                        <></>
+                    }
+                    
                     <br/>
                     </>
                 ))
@@ -62,5 +111,6 @@ const CompanyDetails = ({match, token, isAdmin}) => {
 }
 
 export default connect(({authedUser}) => {
-    return ({token: authedUser.token, isAdmin: authedUser.isAdmin})
+    const userId = authedUser.userInfo? authedUser.userInfo.userId : null
+    return ({token: authedUser.token, isAdmin: authedUser.isAdmin, userId})
 })(CompanyDetails);

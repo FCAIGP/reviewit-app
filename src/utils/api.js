@@ -83,6 +83,7 @@ export const getAllCompanies = () =>
     fetchRequest(`${api}/company`, InitGet());
 
 export const getPosts = (id) => fetchRequest(`${api}/company/${id}/posts`, InitGet());
+export const getPost = (id) => fetchRequest(`${api}/Post/${id}`, InitGet());
 export const addPost = (text, images, companyId, token) => fetchRequest(`${api}/Post`, InitPost({
     text,
     images,
