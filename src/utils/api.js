@@ -82,6 +82,21 @@ export const getCompany = (id) => fetchRequest(`${api}/company/${id}`, InitGet()
 export const getAllCompanies = () =>
     fetchRequest(`${api}/company`, InitGet());
 
+export const getReviews = (id) => fetchRequest(`${api}/company/${id}/reviews`, InitGet());
+export const getReview = (id) => fetchRequest(`${api}/review/${id}`, InitGet())
+export const addReview = (contact, salary, jobDescription, body, tags, companyId, isAnonymous, token) => fetchRequest(`${api}/Review`, InitPost({
+    contact, salary, jobDescription, body, tags, companyId, isAnonymous
+}, token))
+export const deleteReview = (id, token) => fetchRequest(`${api}/review/${id}`, InitDelete(token))
+
+export const getVotes = (id) => fetchRequest(`${api}/Review/${id}/votes`, InitGet());
+export const Upvote = (id, token) => fetchRequest(`${api}/Review/${id}/upvote`, InitPut(null, token));
+export const DownVote = (id, token) => fetchRequest(`${api}/Review/${id}/downvote`, InitPut(null, token));
+
+export const getReplies = (id) => fetchRequest(`${api}/Review/${id}/replies`, InitGet());
+export const addReply = (parentId, body, token) => fetchRequest(`${api}/Reply`, InitPost({parentId, body},token))
+export const getReply = (id) => fetchRequest(`${api}/Reply/${id}`, InitGet())
+
 export const getPosts = (id) => fetchRequest(`${api}/company/${id}/posts`, InitGet());
 export const getPost = (id) => fetchRequest(`${api}/Post/${id}`, InitGet());
 export const addPost = (text, images, companyId, token) => fetchRequest(`${api}/Post`, InitPost({
