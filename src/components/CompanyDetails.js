@@ -7,6 +7,7 @@ import {Spinner, Modal, Form} from 'react-bootstrap'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Review from './Review';
+import Post from './Post'
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
@@ -53,6 +54,11 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
         AddReviewClose()
         toast.success("Added Review Successfuly!", {position:toast.POSITION.TOP_CENTER})
         setIsAnonymous(true)
+    }
+
+    const updatePostState = () =>{
+        console.log("i am here")
+        getPosts(match.params.companyId).then(res => setPosts(res))
     }
 
     function handlePostDelete(postId){
@@ -163,22 +169,15 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
             <br/>
             {
                 posts.map(post => (
-                    <>
-                    <p>Text: {post.text}</p>
-                    <p>Images: {post.images}</p>
-                    <p>Created Date: {post.createdDate}</p>
-
-                    {
-                        userId == company.ownerId ?
-                        <div>
-
-                        <Link to={{pathname:`${window.location.pathname}/updatePost/${post.postId}`, text: post.text, images:post.images}} variant="primary">Update</Link>
-                        <Button onClick={() => handlePostDelete(post.postId)} variant="danger">Delete</Button> </div>:
-                        <></>
-                    }
-                    
-                    <br/>
-                    </>
+                    <div>
+                    <Post id={post.postId} companyID ={company.companyId} ownerID={company.ownerId} userID={userId}/>
+                     {
+                         userId == company.ownerId ?
+                         <div>
+                         <Button onClick={() => handlePostDelete(post.postId)} variant="danger">Delete</Button> </div>:
+                         <></>
+                     }
+                    </div>
                 ))
             }
             <h1>Reviews</h1>

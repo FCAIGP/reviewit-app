@@ -88,10 +88,7 @@ const Review = ({id, authorId, token}) => {
                 {
                     replies.map(reply => (
                         <div key={reply.replyId}>
-                            {/* TODO figure out why Reply component has problems with its state*/}
-                            {/* <Reply id = {reply.replyId} replyAuthorId = {reply.authorId} /> */}
-                            <p>Reply ID: {reply.replyId}</p>
-                            <p>Body: {reply.body}</p>
+                            <Reply id = {reply.replyId} replyAuthorId = {reply.authorId} />
                             <br></br>
                         </div>
                     ))
