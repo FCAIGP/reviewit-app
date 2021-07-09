@@ -12,7 +12,6 @@ import ClaimRequestList from "./components/ClaimRequestList";
 import {connect} from 'react-redux';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {handleRenewToken} from './actions/authedUser';
-import AddPost from './components/AddPost';
 import UpdatePost from './components/UpdatePost';
 
 class App extends Component {
@@ -33,8 +32,6 @@ class App extends Component {
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/company" component={CompanyPages}/>
                             <Route exact path="/company/:companyId" component={CompanyDetails}/>
-                            <Route path="/company/:companyId/addPost" component={AddPost}/>
-                            <Route path="/company/:companyId/updatePost/:postId" component={UpdatePost}/>
                             <Route path="/profile/:userId" component={UserProfile}/>
                             <Route exact path="/claimrequest" component={ClaimRequestList}/>
                         </Switch>
