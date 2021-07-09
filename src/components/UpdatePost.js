@@ -11,7 +11,7 @@ const UpdatePost = (props) => {
 
     const handleUpdate = (e) =>{
         e.preventDefault();
-        updatePost(props.match.params.postId, text, images, props.match.params.companyId, props.token)
+        updatePost(props.match.params.postId, text, images.split('\s*,\s*'), props.match.params.companyId, props.token)
     }
 
     return (

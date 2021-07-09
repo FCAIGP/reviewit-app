@@ -11,8 +11,7 @@ const AddPost = (props) => {
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        addPost(text, images, props.match.params.companyId, props.token).then(v => console.log(v))
-        
+        addPost(text, images.split('\s*,\s*'), props.match.params.companyId, props.token).then(v => console.log(v))
     }
 
     return (
