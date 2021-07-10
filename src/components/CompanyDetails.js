@@ -1,13 +1,16 @@
-import {Button, Form, Modal, Spinner} from 'react-bootstrap'
-import React, {useEffect, useState} from 'react'
-import {addPost, addReview, deletePost, deleteReview, getCompany, getPosts, getReviews, addClaimRequest} from '../utils/api'
-import {connect} from 'react-redux'
-import {toast, ToastContainer} from 'react-toastify';
+import { Button, Form, Modal, Spinner } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { addPost, addReview, deletePost, deleteReview, getCompany, getPosts, getReviews, addClaimRequest } from '../utils/api'
+import { connect } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Review from './Review';
 import Post from './Post'
+import { StyledGroup, StyledHeader, StyledGroup2 } from './formStyle'
+import axios from 'axios'
 
-const CompanyDetails = ({match, token, userId, isAdmin}) => {
+
+const CompanyDetails = ({ match, token, userId, isAdmin }) => {
 
     const [company, setCompany] = useState({})
     const [posts, setPosts] = useState([])
@@ -34,8 +37,9 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
     // add post
     const [text, setText] = useState("")
-    const [images, setImages] = useState("")
-
+    const [images, setImages] = useState([])
+    const [postValidated, setPostValidated] = useState(false);
+    const [postImage, setPostImage] = useState([])
 
     // add review
     const [contactInfo, setContactInfo] = useState(null)
@@ -44,30 +48,97 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
     const [reviewBody, setReviewBody] = useState(null)
     const [reviewTags, setReviewTags] = useState(null)
     const [isAnonymous, setIsAnonymous] = useState(true)
+    const [reviewValidated, setReviewValidated] = useState(false);
 
-    const handleAddClaimRequest = (e) =>{
-        e.preventDefault();
-        addClaimRequest(claimDescription,claimTitle,claimIdentification,claimProofOfWork,claimLinkedIn,company.companyId,token);
-        setShowClaimRequest(false);
-        toast.success("Claim Request posted Successfully!", {position: toast.POSITION.TOP_CENTER})
-    }
 
     const handleAddPost = (e) => {
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        else {
+            if (postImage.length > 0) {
+                const urlList = []
+                const upload = postImage.map(img => {
+                    const formData = new FormData()
+                    formData.append("file", img);
+                    formData.append("upload_preset", "pnwecikc");
+                    return axios.post("https://api.cloudinary.com/v1_1/dyhfbrmbx/image/upload", formData).then((response) => {
+                        urlList.push(response.data.url)
+                        setImages(images => [...images, response.data.url])
+                    }).catch(error => {
+                        console.log(error)
+                    })
+                })
+                axios.all(upload).then(() => {
+                    addPost(text, urlList, match.params.companyId, token).then((v) => {
+                        setPosts(posts => [...posts, v])
+                        setImages([])
+                        setText([])
+                        setPostImage([])
+                    })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                    handleClose()
+                    toast.success("Added Post Successfully!", { position: toast.POSITION.TOP_CENTER })
+                })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
+            else {
+                addPost(text, images, match.params.companyId, token).then((v) => {
+                    setPosts(posts => [...posts, v])
+                    setImages([])
+                    setPostImage([])
+                    setText([])
+                })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                handleClose()
+                toast.success("Added Post Successfully!", { position: toast.POSITION.TOP_CENTER })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
+        }
+        setPostValidated(true)
         e.preventDefault();
-        addPost(text, images.split('\s*,\s*'), match.params.companyId, token).then(v => setPosts(posts => [...posts, v]))
-        handleClose()
-        toast.success("Added Post Successfully!", {position: toast.POSITION.TOP_CENTER})
     }
 
     const handleAddReview = (e) => {
-        e.preventDefault()
-        console.log(isAnonymous)
-        addReview(contactInfo, salary, jobDescription, reviewBody, reviewTags.split('\s*,\s*'), match.params.companyId, isAnonymous, token)
-            .then(v => setReviews(reviews => [...reviews, v]))
-        AddReviewClose()
-        toast.success("Added Review Successfuly!", {position: toast.POSITION.TOP_CENTER})
-        setIsAnonymous(true)
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        else {
+            addReview(contactInfo, salary, jobDescription, reviewBody, reviewTags.split('\s*,\s*'), match.params.companyId, isAnonymous, token)
+                .then((v) => {
+                    setReviews(reviews => [...reviews, v])
+                    setReviewBody(null)
+                    setSalary(null)
+                    setContactInfo(null)
+                    setJobDescription(null)
+                    setReviewTags(null)
+                    setIsAnonymous(true)
+                })
+            AddReviewClose()
+            toast.success("Added Review Successfuly!", { position: toast.POSITION.TOP_CENTER })
+        }
+        setReviewValidated(true);
+        e.preventDefault();
     }
+    const handleAddClaimRequest = (e) => {
+        e.preventDefault();
+        addClaimRequest(claimDescription, claimTitle, claimIdentification, claimProofOfWork, claimLinkedIn, company.companyId, token);
+        setShowClaimRequest(false);
+        toast.success("Claim Request posted Successfully!", { position: toast.POSITION.TOP_CENTER })
+    }
+
 
     const updatePostState = () => {
         console.log("i am here")
@@ -76,18 +147,17 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
     function handlePostDelete(postId) {
         deletePost(postId, token).then(v => setPosts(posts => posts.filter(p => p.postId != postId)))
-        toast.error("Post has been Deleted!", {position: toast.POSITION.TOP_CENTER})
+        toast.error("Post has been Deleted!", { position: toast.POSITION.TOP_CENTER })
     }
 
     function handleReviewDelete(review_Id) {
         {/* TO DO figure out why reviews are not filtered like Posts delete */
         }
         deleteReview(review_Id, token).then(v => setReviews(reviews => reviews.filter(p => p.reviewId != review_Id)))
-        toast.error("Review has been Deleted!", {position: toast.POSITION.TOP_CENTER})
+        toast.error("Review has been Deleted!", { position: toast.POSITION.TOP_CENTER })
     }
 
     useEffect(() => {
-        console.log(userId)
         getCompany(match.params.companyId).then(res => setCompany(res));
         getPosts(match.params.companyId).then(res => setPosts(res));
         getReviews(match.params.companyId).then(res => setReviews(res));
@@ -96,9 +166,9 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
     return (
         <div>
-            <ToastContainer autoClose={3000}/>
+            <ToastContainer autoClose={3000} />
             {/* todo : adjust loading spinner place */}
-            {loading ? <Spinner animation="border"/> : <></>}
+            {loading ? <Spinner animation="border" /> : <></>}
             <h1>Company Details</h1>
             <p>Name: {company.name}</p>
             <p>Headquarters: {company.headquarters}</p>
@@ -109,10 +179,10 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
             <p>Score up to date: {company.isScoreUpToDate ? "Yes" : "No"}</p>
             <p>Score: {company.score}</p>
             <p>Close Status: {company.closeStatus}</p>
-            <br/>
+            <br />
 
             {
-                userId ? userId == company.ownerId ?  <button onClick={handleShow}> Add Post</button> : <></> : <></>
+                userId && userId == company.ownerId && <button onClick={handleShow}> Add Post</button>
             }
             {
                 !company.ownerId &&
@@ -124,7 +194,7 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                     <Form.Group>
                         <Form.Label>Description</Form.Label>
                         <Form.Control as="textarea" rows={3} value={claimDescription}
-                                      onChange={e => setClaimDescription(e.target.value)}></Form.Control>
+                            onChange={e => setClaimDescription(e.target.value)}></Form.Control>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Job Title</Form.Label>
@@ -133,17 +203,17 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                     <Form.Group>
                         <Form.Label>Identification Card (image)</Form.Label>
                         <Form.Control value={claimIdentification}
-                                      onChange={e => setClaimIdentification(e.target.value)}></Form.Control>
+                            onChange={e => setClaimIdentification(e.target.value)}></Form.Control>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Proof of Work (image)</Form.Label>
                         <Form.Control value={claimProofOfWork}
-                                      onChange={e => setClaimProofOfWork(e.target.value)}></Form.Control>
+                            onChange={e => setClaimProofOfWork(e.target.value)}></Form.Control>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>LinkedIn Account</Form.Label>
                         <Form.Control value={claimLinkedIn}
-                                      onChange={e => setClaimLinkedIn(e.target.value)}></Form.Control>
+                            onChange={e => setClaimLinkedIn(e.target.value)}></Form.Control>
                     </Form.Group>
 
                     <Button variant="primary" type="submit" onClick={handleAddClaimRequest}>
@@ -152,88 +222,93 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                 </Form>
             </Modal>
             {/* Add post */}
+
             <Modal show={show} onHide={handleClose}>
-                <Form>
-                    <Form.Group>
+                <Form noValidate validated={postValidated} onSubmit={handleAddPost}>
+                    <StyledHeader>Create Post</StyledHeader>
+                    <StyledGroup>
                         <Form.Label>Text</Form.Label>
-                        <Form.Control as="textarea" rows={3} onChange={e => setText(e.target.value)}/>
-                    </Form.Group>
-
-                    <Form.Group>
+                        <Form.Control required as="textarea" rows={3} placeholder="Enter post text" value={text} onChange={e => setText(e.target.value)} />
+                        <Form.Control.Feedback type="invalid">Post body can't be empty.</Form.Control.Feedback>
+                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
+                    </StyledGroup>
+                    <StyledGroup>
                         <Form.Label>Images</Form.Label>
-                        <Form.Control type="text" placeholder="array of strings for now"
-                                      onChange={e => setImages(e.target.value)}/>
-                    </Form.Group>
-
-                    <Button variant="primary" type="submit" onClick={handleAddPost}>
-                        Submit
-                    </Button>
+                        <Form.Control type="file" multiple onChange={e => setPostImage(postImage => [...postImage, ...e.target.files])} />
+                    </StyledGroup>
+                    <StyledGroup2>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </StyledGroup2>
                 </Form>
             </Modal>
+
 
             {/* Add Review */}
+
             <Modal show={showAddReview} onHide={AddReviewClose}>
-                <Form>
-                    <Form.Group>
+                <Form noValidate validated={reviewValidated} onSubmit={handleAddReview}>
+                    <StyledHeader>Add Review</StyledHeader>
+                    <StyledGroup>
                         <Form.Label>Contact Info</Form.Label>
-                        <Form.Control type="text" onChange={e => setContactInfo(e.target.value)}/>
-                    </Form.Group>
+                        <Form.Control type="text" value={contactInfo} onChange={e => setContactInfo(e.target.value)} />
+                    </StyledGroup>
 
-                    <Form.Group>
+                    <StyledGroup>
                         <Form.Label>Salary</Form.Label>
-                        <Form.Control type="text" onChange={e => setSalary(e.target.value.replace(/\D/, ''))}/>
-                    </Form.Group>
-
-                    <Form.Group>
+                        <Form.Control type="text" value={salary} onChange={e => setSalary(e.target.value.replace(/\D/, ''))} />
+                    </StyledGroup>
+                    <StyledGroup>
                         <Form.Label>Job Description</Form.Label>
-                        <Form.Control type="text" onChange={e => setJobDescription(e.target.value)}/>
-                    </Form.Group>
+                        <Form.Control type="text" value={jobDescription} onChange={e => setJobDescription(e.target.value)} />
+                    </StyledGroup>
 
-                    <Form.Group>
+                    <StyledGroup>
                         <Form.Label>Body</Form.Label>
-                        <Form.Control as="textarea" rows={3} onChange={e => setReviewBody(e.target.value)}/>
-                    </Form.Group>
-
-                    <Form.Group>
+                        <Form.Control required as="textarea" rows={3} value={reviewBody} onChange={e => setReviewBody(e.target.value)} />
+                        <Form.Control.Feedback type="invalid">Review body can't be empty.</Form.Control.Feedback>
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    </StyledGroup>
+                    <StyledGroup>
                         <Form.Label>Tags</Form.Label>
                         <Form.Control type="text" placeholder="tags seperated by a comma"
-                                      onChange={e => setReviewTags(e.target.value)}/>
-                    </Form.Group>
+                            value={reviewTags} onChange={e => setReviewTags(e.target.value)} />
+                    </StyledGroup>
 
                     {
-                        userId ?
-                            <Form.Group>
-                                <Form.Check type="checkbox" label="Anonymous?" defaultChecked={isAnonymous}
-                                            onChange={e => setIsAnonymous(e.target.checked)}/>
-                            </Form.Group> : <> </>
+                        userId &&
+                        <StyledGroup>
+                            <Form.Check type="checkbox" label="Anonymous?" defaultChecked={isAnonymous} onChange={e => setIsAnonymous(e.target.checked)} />
+                        </StyledGroup>
                     }
-
-                    <Button variant="primary" type="submit" onClick={handleAddReview}>
-                        Submit
-                    </Button>
+                    <StyledGroup2>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </StyledGroup2>
                 </Form>
             </Modal>
 
 
-            <br/>
+            <br />
             <h1>Posts</h1>
-            <br/>
+            <br />
             {
                 posts.map(post => (
-                    <div>
-                        <Post id={post.postId} companyID={company.companyId} ownerID={company.ownerId} userID={userId}/>
+                    <div key={post.postId}>
+                        <Post id={post.postId} companyID={company.companyId} ownerID={company.ownerId} userID={userId} />
                         {
                             userId == company.ownerId ?
                                 <div>
-                                    <Button onClick={() => handlePostDelete(post.postId)}
-                                            variant="danger">Delete</Button></div> :
+                                    <Button onClick={() => handlePostDelete(post.postId)} variant="danger">Delete</Button> </div> :
                                 <></>
                         }
                     </div>
                 ))
             }
             <h1>Reviews</h1>
-            <br/>
+            <br />
             {
                 reviews.length == 0 ? <h3>No reviews yet</h3> : <></>
             }
@@ -243,10 +318,10 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
             {
                 reviews.map(review => (
                     <div key={review.reviewId}>
-                        <Review id={review.reviewId} authorId={review.authorId ? review.authorId : null}/>
+                        <Review id={review.reviewId} authorId={review.authorId ? review.authorId : null} />
                         {
                             isAdmin ? <Button onClick={() => handleReviewDelete(review.reviewId)}
-                                              variant="danger">Delete</Button> : <></>
+                                variant="danger">Delete</Button> : <></>
                         }
                         <p>-------------------------------------------------------------------------------</p>
                     </div>
@@ -256,7 +331,7 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
     )
 }
 
-export default connect(({authedUser}) => {
+export default connect(({ authedUser }) => {
     const userId = authedUser.userInfo ? authedUser.userInfo.userId : null
-    return ({token: authedUser.token, isAdmin: authedUser.isAdmin, userId})
+    return ({ token: authedUser.token, isAdmin: authedUser.isAdmin, userId })
 })(CompanyDetails);
