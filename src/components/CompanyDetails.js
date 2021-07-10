@@ -71,6 +71,9 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                 setText([])
                 setPostImage([])
                 })
+                .catch(error => {
+                    console.log(error)
+                })
                 handleClose()
                 toast.success("Added Post Successfully!", {position:toast.POSITION.TOP_CENTER})})
                 .catch(error =>{
@@ -83,6 +86,9 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                 setImages([])
                 setPostImage([])
                 setText([])
+                })
+                .catch(error => {
+                    console.log(error)
                 })
                 handleClose()
                 toast.success("Added Post Successfully!", {position:toast.POSITION.TOP_CENTER})
