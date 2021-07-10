@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Form, Modal, Button} from 'react-bootstrap'
 import Reply from './Reply'
-
+import { StyledHeader, StyledGroup, StyledGroup2} from './formStyle';
 const Review = ({id, authorId, token}) => {
 
     const [review, setReview] = useState({})
@@ -18,9 +18,10 @@ const Review = ({id, authorId, token}) => {
 
     const AddReplyClose = () => setShowAddReply(false)
     const AddReplyShow = () => setShowAddReply(true)
+
     // Add reply
     const [replyBody, setReplyBody] = useState("")
-
+    const [replyValidated, setReplyValidated] = useState(false)
 
     function handleUpvote(id){
         Upvote(id, token).then(res => {
@@ -41,10 +42,24 @@ const Review = ({id, authorId, token}) => {
     }
 
     const handleAddReply = (e) =>{
+        const form = e.currentTarget;
+        if(form.checkValidity() === false){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        else{
+            addReply(id, replyBody, token).then((v) => {
+                setReplies(replies => [...replies, v])
+                setReplyBody("")
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            AddReplyClose()
+            toast.success("Added Reply Successfully!", {position:toast.POSITION.TOP_CENTER})
+        }
+        setReplyValidated(true)
         e.preventDefault();
-        addReply(id, replyBody, token).then(v => setReplies(replies => [...replies, v]))
-        AddReplyClose()
-        toast.success("Added Reply Successfully!", {position:toast.POSITION.TOP_CENTER})
     }
 
     useEffect(() => {
@@ -60,14 +75,19 @@ const Review = ({id, authorId, token}) => {
         <div>
 
             <Modal show = {showAddReply} onHide = {AddReplyClose}>
-                <Form>
-                    <Form.Group>
+                <Form noValidate validated={replyValidated} onSubmit={handleAddReply}>
+                    <StyledHeader>Add Reply</StyledHeader>
+                    <StyledGroup>
                         <Form.Label>Body</Form.Label>
-                        <Form.Control as="textarea" rows={3} onChange={e => setReplyBody(e.target.value)} />
-                    </Form.Group>
-                    <Button variant="primary" type="submit" onClick={handleAddReply}>
+                        <Form.Control required as="textarea" rows={3} value={replyBody} onChange={e => setReplyBody(e.target.value)} />
+                        <Form.Control.Feedback type="invalid">Reply body can't be empty.</Form.Control.Feedback>
+                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
+                    </StyledGroup>
+                    <StyledGroup2>
+                    <Button variant="primary" type="submit">
                         Submit
-                </Button>
+                    </Button>
+                    </StyledGroup2>
                 </Form>
             </Modal>
 
