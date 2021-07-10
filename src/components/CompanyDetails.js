@@ -6,10 +6,13 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Review from './Review';
 import Post from './Post'
+import PostsList from './company_details/PostsList';
+import ReviewsList from './company_details/ReviewsList';
 import {StyledGroup, StyledGroup2, StyledHeader} from './formStyle'
 
 import ClaimRequestModal from "./modals/ClaimRequestModal";
 import AddPostModal from './modals/AddPostModal';
+import AddReviewModal from './modals/AddReviewModal';
 
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
@@ -32,35 +35,59 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
     // add post
 
-    // add review
-    const [contactInfo, setContactInfo] = useState(null)
-    const [salary, setSalary] = useState(null)
-    const [jobDescription, setJobDescription] = useState(null)
-    const [reviewBody, setReviewBody] = useState(null)
-    const [reviewTags, setReviewTags] = useState(null)
-    const [isAnonymous, setIsAnonymous] = useState(true)
-    const [reviewValidated, setReviewValidated] = useState(false);
-
-    const handleAddReview = (e) => {
+    const handleAddPost = (e) => {
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
             e.preventDefault();
             e.stopPropagation();
         } else {
-            addReview(contactInfo, salary, jobDescription, reviewBody, reviewTags.split('\s*,\s*'), match.params.companyId, isAnonymous, token)
-                .then((v) => {
-                    setReviews(reviews => [...reviews, v])
-                    setReviewBody(null)
-                    setSalary(null)
-                    setContactInfo(null)
-                    setJobDescription(null)
-                    setReviewTags(null)
-                    setIsAnonymous(true)
+            if (postImage.length > 0) {
+                const urlList = []
+                const upload = postImage.map(img => {
+                    const formData = new FormData()
+                    formData.append("file", img);
+                    formData.append("upload_preset", "pnwecikc");
+                    return axios.post("https://api.cloudinary.com/v1_1/dyhfbrmbx/image/upload", formData).then((response) => {
+                        urlList.push(response.data.url)
+                        setImages(images => [...images, response.data.url])
+                    }).catch(error => {
+                        console.log(error)
+                    })
                 })
-            AddReviewClose()
-            toast.success("Added Review Successfuly!", {position: toast.POSITION.TOP_CENTER})
+                axios.all(upload).then(() => {
+                    addPost(text, urlList, match.params.companyId, token).then((v) => {
+                        setPosts(posts => [...posts, v])
+                        setImages([])
+                        setText([])
+                        setPostImage([])
+                    })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                    handleClose()
+                    toast.success("Added Post Successfully!", {position: toast.POSITION.TOP_CENTER})
+                })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            } else {
+                addPost(text, images, match.params.companyId, token).then((v) => {
+                    setPosts(posts => [...posts, v])
+                    setImages([])
+                    setPostImage([])
+                    setText([])
+                })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                handleClose()
+                toast.success("Added Post Successfully!", {position: toast.POSITION.TOP_CENTER})
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
         }
-        setReviewValidated(true);
+        setPostValidated(true)
         e.preventDefault();
     }
 
@@ -119,92 +146,12 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
             {/* Add post */}
             <AddPostModal setPosts={setPosts} show={showAddPost} setShow={setShowAddPost} />
             {/* Add Review */}
-
-            <Modal show={showAddReview} onHide={AddReviewClose}>
-                <Form noValidate validated={reviewValidated} onSubmit={handleAddReview}>
-                    <StyledHeader>Add Review</StyledHeader>
-                    <StyledGroup>
-                        <Form.Label>Contact Info</Form.Label>
-                        <Form.Control type="text" value={contactInfo} onChange={e => setContactInfo(e.target.value)}/>
-                    </StyledGroup>
-
-                    <StyledGroup>
-                        <Form.Label>Salary</Form.Label>
-                        <Form.Control type="text" value={salary}
-                                      onChange={e => setSalary(e.target.value.replace(/\D/, ''))}/>
-                    </StyledGroup>
-                    <StyledGroup>
-                        <Form.Label>Job Description</Form.Label>
-                        <Form.Control type="text" value={jobDescription}
-                                      onChange={e => setJobDescription(e.target.value)}/>
-                    </StyledGroup>
-
-                    <StyledGroup>
-                        <Form.Label>Body</Form.Label>
-                        <Form.Control required as="textarea" rows={3} value={reviewBody}
-                                      onChange={e => setReviewBody(e.target.value)}/>
-                        <Form.Control.Feedback type="invalid">Review body can't be empty.</Form.Control.Feedback>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </StyledGroup>
-                    <StyledGroup>
-                        <Form.Label>Tags</Form.Label>
-                        <Form.Control type="text" placeholder="tags seperated by a comma"
-                                      value={reviewTags} onChange={e => setReviewTags(e.target.value)}/>
-                    </StyledGroup>
-
-                    {
-                        userId &&
-                        <StyledGroup>
-                            <Form.Check type="checkbox" label="Anonymous?" defaultChecked={isAnonymous}
-                                        onChange={e => setIsAnonymous(e.target.checked)}/>
-                        </StyledGroup>
-                    }
-                    <StyledGroup2>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                    </StyledGroup2>
-                </Form>
-            </Modal>
-
-
+            <AddReviewModal show={showAddReview} setShow={setShowAddReview} companyId={company.companyId} token={token} setReviews={setReviews}
+                            userId = {userId} AddReviewClose={AddReviewClose}/>
             <br/>
-            <h1>Posts</h1>
-            <br/>
-            {
-                posts.map(post => (
-                    <div key={post.postId}>
-                        <Post id={post.postId} companyID={company.companyId} ownerID={company.ownerId} userID={userId}/>
-                        {
-                            userId == company.ownerId ?
-                                <div>
-                                    <Button onClick={() => handlePostDelete(post.postId)}
-                                            variant="danger">Delete</Button></div> :
-                                <></>
-                        }
-                    </div>
-                ))
-            }
-            <h1>Reviews</h1>
-            <br/>
-            {
-                reviews.length == 0 ? <h3>No reviews yet</h3> : <></>
-            }
-
+            <PostsList posts={posts} companyId={company.companyId} ownerId={company.ownerId} userId={userId}/>
             <button onClick={AddReviewShow}> Add Review</button>
-
-            {
-                reviews.map(review => (
-                    <div key={review.reviewId}>
-                        <Review id={review.reviewId} authorId={review.authorId ? review.authorId : null}/>
-                        {
-                            isAdmin ? <Button onClick={() => handleReviewDelete(review.reviewId)}
-                                              variant="danger">Delete</Button> : <></>
-                        }
-                        <p>-------------------------------------------------------------------------------</p>
-                    </div>
-                ))
-            }
+            <ReviewsList reviews={reviews} isAdmin={isAdmin} handleReviewDelete={handleReviewDelete}/>
         </div>
     )
 }
