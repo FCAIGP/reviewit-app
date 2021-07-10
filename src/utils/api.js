@@ -108,6 +108,9 @@ export const deletePost = (id, token) => fetch(`${api}/Post/${id}`, InitDelete(t
 export const updatePost = (id, text, images, companyId, token) =>
     fetchRequest(`${api}/Post/${id}`, InitPut({text, images, companyId}, token))
 
+export const addClaimRequest = (description, title, identificationCard, proofOfWork, linkedInAccount, companyID, token) =>
+    fetchRequest(`${api}/ClaimRequest`, InitPost({description, title, identificationCard, proofOfWork, linkedInAccount, companyID}, token));
+
 export const getAllClaimRequests = (token) => fetchRequest(`${api}/claimrequest`, InitGet(token));
 
 export const acceptClaimRequest = (id, token) => fetchRequest(`${api}/ClaimRequest/${id}/accept`, InitPut(null, token));
