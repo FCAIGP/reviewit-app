@@ -13,7 +13,7 @@ function AddReviewModal(props) {
     const [isAnonymous, setIsAnonymous] = useState(true)
     const [reviewValidated, setReviewValidated] = useState(false);
 
-    const {show, setShow, companyId, token, setReviews, userId, AddReviewClose} = props;
+    const {show, setShow, companyId, token, setReviews, userId} = props;
 
     const handleAddReview = (e) => {
         const form = e.currentTarget;
@@ -30,7 +30,7 @@ function AddReviewModal(props) {
                     setJobDescription(null)
                     setReviewTags(null)
                     setIsAnonymous(true)
-                    AddReviewClose()
+                    setShow(false)
                     toast.success("Added Review Successfuly!", {position: toast.POSITION.TOP_CENTER})
                 }).catch(error => {
                     toast.error("Failed to add review", {position: toast.POSITION.TOP_CENTER})
