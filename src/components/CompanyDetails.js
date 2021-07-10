@@ -9,10 +9,11 @@ import Post from './Post'
 import PostsList from './company_details/PostsList';
 import ReviewsList from './company_details/ReviewsList';
 import {StyledGroup, StyledGroup2, StyledHeader} from './formStyle'
-import axios from 'axios'
 
 import ClaimRequestModal from "./modals/ClaimRequestModal";
+import AddPostModal from './modals/AddPostModal';
 import AddReviewModal from './modals/AddReviewModal';
+
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
@@ -22,21 +23,17 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
     const [loading, setLoading] = useState(true)
 
 
-    const [show, setShow] = useState(false)
+    const [showAddPost, setShowAddPost] = useState(false)
     const [showAddReview, setShowAddReview] = useState(false)
     const [showClaimRequest, setShowClaimRequest] = useState(false)
 
     const AddReviewClose = () => setShowAddReview(false)
     const AddReviewShow = () => setShowAddReview(true)
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    
+    const handleShow = () => setShowAddPost(true);
 
     // add post
-    const [text, setText] = useState("")
-    const [images, setImages] = useState([])
-    const [postValidated, setPostValidated] = useState(false);
-    const [postImage, setPostImage] = useState([])
 
     const handleAddPost = (e) => {
         const form = e.currentTarget;
@@ -94,7 +91,6 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
         e.preventDefault();
     }
 
-
     const updatePostState = () => {
         console.log("i am here")
         getPosts(match.params.companyId).then(res => setPosts(res))
@@ -148,31 +144,7 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                                token={token}/>
 
             {/* Add post */}
-
-            <Modal show={show} onHide={handleClose}>
-                <Form noValidate validated={postValidated} onSubmit={handleAddPost}>
-                    <StyledHeader>Create Post</StyledHeader>
-                    <StyledGroup>
-                        <Form.Label>Text</Form.Label>
-                        <Form.Control required as="textarea" rows={3} placeholder="Enter post text" value={text}
-                                      onChange={e => setText(e.target.value)}/>
-                        <Form.Control.Feedback type="invalid">Post body can't be empty.</Form.Control.Feedback>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </StyledGroup>
-                    <StyledGroup>
-                        <Form.Label>Images</Form.Label>
-                        <Form.Control type="file" multiple
-                                      onChange={e => setPostImage(postImage => [...postImage, ...e.target.files])}/>
-                    </StyledGroup>
-                    <StyledGroup2>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                    </StyledGroup2>
-                </Form>
-            </Modal>
-
-
+            <AddPostModal setPosts={setPosts} show={showAddPost} setShow={setShowAddPost} />
             {/* Add Review */}
             <AddReviewModal show={showAddReview} setShow={setShowAddReview} companyId={company.companyId} token={token} setReviews={setReviews}
                             userId = {userId} AddReviewClose={AddReviewClose}/>
