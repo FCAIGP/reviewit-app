@@ -8,7 +8,8 @@ const CompanyPages = () => {
 
 
     const [companies, setCompanies] = useState([]);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         getAllCompanies().then(res => setCompanies(res));
@@ -20,17 +21,18 @@ const CompanyPages = () => {
             {/* todo : adjust loading spinner place */}
             {loading ? <Spinner animation="border" /> : <></>}
             <h1>Company List</h1>
+            <input type="text" value={search} onChange={e=>setSearch(e.target.value)}/>
             <Table borderless>
                 <thead>
                 <tr>
                     <th>Company Name</th>
                     <th>Headquarters</th>
                     <th>Region</th>
-                    <th></th>
+                    <th>Go to</th>
                 </tr>
                 </thead>
                 <tbody>
-                {companies.map((company) => (
+                {companies.filter(company => company.name.includes(search)).map((company) => (
                     <tr key={company.companyId}>
                         <td>{company.name}</td>
                         <td>{company.headquarters}</td>
