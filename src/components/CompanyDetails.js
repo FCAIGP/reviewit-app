@@ -6,6 +6,8 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Review from './Review';
 import Post from './Post'
+import PostsList from './company_details/PostsList';
+import ReviewsList from './company_details/ReviewsList';
 import {StyledGroup, StyledGroup2, StyledHeader} from './formStyle'
 import axios from 'axios'
 
@@ -174,44 +176,10 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
             {/* Add Review */}
             <AddReviewModal show={showAddReview} setShow={setShowAddReview} companyId={company.companyId} token={token} setReviews={setReviews}
                             userId = {userId} AddReviewClose={AddReviewClose}/>
-
             <br/>
-            <h1>Posts</h1>
-            <br/>
-            {
-                posts.map(post => (
-                    <div key={post.postId}>
-                        <Post id={post.postId} companyID={company.companyId} ownerID={company.ownerId} userID={userId}/>
-                        {
-                            userId == company.ownerId ?
-                                <div>
-                                    <Button onClick={() => handlePostDelete(post.postId)}
-                                            variant="danger">Delete</Button></div> :
-                                <></>
-                        }
-                    </div>
-                ))
-            }
-            <h1>Reviews</h1>
-            <br/>
-            {
-                reviews.length == 0 ? <h3>No reviews yet</h3> : <></>
-            }
-
+            <PostsList posts={posts} companyId={company.companyId} ownerId={company.ownerId} userId={userId}/>
             <button onClick={AddReviewShow}> Add Review</button>
-
-            {
-                reviews.map(review => (
-                    <div key={review.reviewId}>
-                        <Review id={review.reviewId} authorId={review.authorId ? review.authorId : null}/>
-                        {
-                            isAdmin ? <Button onClick={() => handleReviewDelete(review.reviewId)}
-                                              variant="danger">Delete</Button> : <></>
-                        }
-                        <p>-------------------------------------------------------------------------------</p>
-                    </div>
-                ))
-            }
+            <ReviewsList reviews={reviews} isAdmin={isAdmin} handleReviewDelete={handleReviewDelete}/>
         </div>
     )
 }
