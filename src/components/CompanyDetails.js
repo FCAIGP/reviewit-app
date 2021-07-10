@@ -7,9 +7,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import Review from './Review';
 import Post from './Post'
 import {StyledGroup, StyledGroup2, StyledHeader} from './formStyle'
-import axios from 'axios'
 
 import ClaimRequestModal from "./modals/ClaimRequestModal";
+import AddPostModal from './modals/AddPostModal';
+
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
@@ -19,21 +20,17 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
     const [loading, setLoading] = useState(true)
 
 
-    const [show, setShow] = useState(false)
+    const [showAddPost, setShowAddPost] = useState(false)
     const [showAddReview, setShowAddReview] = useState(false)
     const [showClaimRequest, setShowClaimRequest] = useState(false)
 
     const AddReviewClose = () => setShowAddReview(false)
     const AddReviewShow = () => setShowAddReview(true)
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    
+    const handleShow = () => setShowAddPost(true);
 
     // add post
-    const [text, setText] = useState("")
-    const [images, setImages] = useState([])
-    const [postValidated, setPostValidated] = useState(false);
-    const [postImage, setPostImage] = useState([])
 
     // add review
     const [contactInfo, setContactInfo] = useState(null)
@@ -43,63 +40,6 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
     const [reviewTags, setReviewTags] = useState(null)
     const [isAnonymous, setIsAnonymous] = useState(true)
     const [reviewValidated, setReviewValidated] = useState(false);
-
-
-    const handleAddPost = (e) => {
-        const form = e.currentTarget;
-        if (form.checkValidity() === false) {
-            e.preventDefault();
-            e.stopPropagation();
-        } else {
-            if (postImage.length > 0) {
-                const urlList = []
-                const upload = postImage.map(img => {
-                    const formData = new FormData()
-                    formData.append("file", img);
-                    formData.append("upload_preset", "pnwecikc");
-                    return axios.post("https://api.cloudinary.com/v1_1/dyhfbrmbx/image/upload", formData).then((response) => {
-                        urlList.push(response.data.url)
-                        setImages(images => [...images, response.data.url])
-                    }).catch(error => {
-                        console.log(error)
-                    })
-                })
-                axios.all(upload).then(() => {
-                    addPost(text, urlList, match.params.companyId, token).then((v) => {
-                        setPosts(posts => [...posts, v])
-                        setImages([])
-                        setText([])
-                        setPostImage([])
-                    })
-                        .catch(error => {
-                            console.log(error)
-                        })
-                    handleClose()
-                    toast.success("Added Post Successfully!", {position: toast.POSITION.TOP_CENTER})
-                })
-                    .catch(error => {
-                        console.log(error)
-                    })
-            } else {
-                addPost(text, images, match.params.companyId, token).then((v) => {
-                    setPosts(posts => [...posts, v])
-                    setImages([])
-                    setPostImage([])
-                    setText([])
-                })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                handleClose()
-                toast.success("Added Post Successfully!", {position: toast.POSITION.TOP_CENTER})
-                    .catch(error => {
-                        console.log(error)
-                    })
-            }
-        }
-        setPostValidated(true)
-        e.preventDefault();
-    }
 
     const handleAddReview = (e) => {
         const form = e.currentTarget;
@@ -177,31 +117,7 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                                token={token}/>
 
             {/* Add post */}
-
-            <Modal show={show} onHide={handleClose}>
-                <Form noValidate validated={postValidated} onSubmit={handleAddPost}>
-                    <StyledHeader>Create Post</StyledHeader>
-                    <StyledGroup>
-                        <Form.Label>Text</Form.Label>
-                        <Form.Control required as="textarea" rows={3} placeholder="Enter post text" value={text}
-                                      onChange={e => setText(e.target.value)}/>
-                        <Form.Control.Feedback type="invalid">Post body can't be empty.</Form.Control.Feedback>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </StyledGroup>
-                    <StyledGroup>
-                        <Form.Label>Images</Form.Label>
-                        <Form.Control type="file" multiple
-                                      onChange={e => setPostImage(postImage => [...postImage, ...e.target.files])}/>
-                    </StyledGroup>
-                    <StyledGroup2>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                    </StyledGroup2>
-                </Form>
-            </Modal>
-
-
+            <AddPostModal setPosts={setPosts} show={showAddPost} setShow={setShowAddPost} />
             {/* Add Review */}
 
             <Modal show={showAddReview} onHide={AddReviewClose}>
