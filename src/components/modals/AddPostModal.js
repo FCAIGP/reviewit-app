@@ -7,7 +7,6 @@ import {addPost} from "../../utils/api";
 
 function AddPostModal(props) {
     const [text, setText] = useState("")
-    const [images, setImages] = useState([])
     const [postValidated, setPostValidated] = useState(false);
     const [postImage, setPostImage] = useState([])
 
@@ -26,7 +25,6 @@ function AddPostModal(props) {
                 formData.append("upload_preset", "pnwecikc");
                 return axios.post("https://api.cloudinary.com/v1_1/dyhfbrmbx/image/upload", formData).then((response) => {
                     urlList.push(response.data.url)
-                    setImages(images => [...images, response.data.url])
                 }).catch(error => {
                     console.log(error)
                 })
@@ -34,7 +32,6 @@ function AddPostModal(props) {
             axios.all(upload).then(() => {
                 addPost(text, urlList, companyId, token).then((v) => {
                     setPosts(posts => [...posts, v])
-                    setImages([])
                     setText("")
                     setPostImage([])
                 })

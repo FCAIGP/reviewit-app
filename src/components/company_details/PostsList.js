@@ -1,17 +1,23 @@
 import Post from "../Post";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import AddPostModal from "../modals/AddPostModal";
+import {getPosts} from "../../utils/api";
 
 function PostsList(props) {
     const [showAddPost, setShowAddPost] = useState(false)
+    const [posts, setPosts] = useState([])
 
-    const {posts, companyId, ownerId, userId, token, setPosts} = props;
+    const {companyId, ownerId, userId, token} = props;
+
+    useEffect(()=>{
+        getPosts(companyId).then(res => setPosts(res));
+    }, [companyId]);
     return (
         <Fragment>
             <AddPostModal setPosts={setPosts} show={showAddPost} setShow={setShowAddPost}  companyId={companyId} token={token}/>
             <h1>Posts</h1>
             {
-                userId && userId == ownerId && <button onClick={() => setShowAddPost(true)}> Add Post</button>
+                userId && userId === ownerId && <button onClick={() => setShowAddPost(true)}> Add Post</button>
             }
             <br/>
             {

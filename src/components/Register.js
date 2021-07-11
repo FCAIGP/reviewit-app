@@ -33,7 +33,7 @@ function Register(props) {
             bio,
             image
         };
-        if(dto.currentCompanyId == "") dto.currentCompanyId = null;
+        if(dto.currentCompanyId === "") dto.currentCompanyId = null;
         dispatch(handleRegister(dto, () => {
             history.push('/login');
         }, (e) => {

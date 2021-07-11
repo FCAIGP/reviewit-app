@@ -12,7 +12,6 @@ import ClaimRequestList from "./components/ClaimRequestList";
 import {connect} from 'react-redux';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {handleRenewToken} from './actions/authedUser';
-import UpdatePost from './components/UpdatePost';
 
 class App extends Component {
 

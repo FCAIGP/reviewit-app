@@ -10,7 +10,6 @@ const Review = ({id, authorId, token}) => {
 
     const [review, setReview] = useState({})
     const [author, setAuthor] = useState(null)
-    const [votes, setVotes] = useState(null)
     const [replies, setReplies] = useState([])
     const [upVotes, setUpVotes] = useState(0)
     const [downVotes, setDownVotes] = useState(0)
@@ -28,7 +27,6 @@ const Review = ({id, authorId, token}) => {
         Upvote(id, token).then(res => {
             toast.success(res.message, {position:toast.POSITION.TOP_CENTER})
             getVotes(id).then((res) => {
-                setVotes(res)
                 setUpVotes(res.upvotes)
                 setDownVotes(res.downvotes)
             }).catch(error => {
@@ -44,7 +42,6 @@ const Review = ({id, authorId, token}) => {
         DownVote(id, token).then(res => {
             toast.success(res.message, {position:toast.POSITION.TOP_CENTER})
             getVotes(id).then((res) => {
-                setVotes(res)
                 setUpVotes(res.upvotes)
                 setDownVotes(res.downvotes)
             }).catch(error => {
@@ -85,7 +82,6 @@ const Review = ({id, authorId, token}) => {
             console.log(error)
         })
         getVotes(id).then((res) => {
-            setVotes(res)
             setUpVotes(res.upvotes)
             setDownVotes(res.downvotes)
         }).catch(error => {
@@ -94,7 +90,7 @@ const Review = ({id, authorId, token}) => {
         getReplies(id).then( res => setReplies(res)).catch(error =>{
             console.log(error)
         })
-    },[id]);
+    },[authorId, id]);
 
     return (
 
@@ -132,7 +128,7 @@ const Review = ({id, authorId, token}) => {
             <button onClick={() => handleUpvote(id)}>Upvote</button>
             <button onClick={() => handleDownVote(id)}>Downvote</button>
             <button onClick = {AddReplyShow}>Add reply</button>
-            <div class="col-md-10 col-sm-10">
+            <div className="col-md-10 col-sm-10">
                 <h4>Replies</h4>
                 {
                     replies.map(reply => (

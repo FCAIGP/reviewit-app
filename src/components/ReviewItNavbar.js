@@ -26,7 +26,7 @@ class ReviewItNavbar extends Component {
                     </Nav>
                     {loggedIn ? <Nav>
                         <Nav.Link as={Link} to={`/profile/${userId}`}>Hello {fullName}</Nav.Link>
-                        <Nav.Link as={Link} onClick={this.logOut_click}>Log out</Nav.Link>
+                        <Nav.Link as={Link} to='/#' onClick={this.logOut_click}>Log out</Nav.Link>
                     </Nav> : <Nav>
                         <Nav.Link as={Link} to="/login">Log in</Nav.Link>
                         <Nav.Link as={Link} to="/register">Register</Nav.Link>
