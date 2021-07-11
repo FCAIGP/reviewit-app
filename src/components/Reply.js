@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import {getReply, getUser} from '../utils/api'
 import {Comment} from "semantic-ui-react";
 import moment from "moment";
-
+import {defaultAvatar} from "./Review";
 
 const Reply = ({id, replyAuthorId}) => {
 
@@ -17,7 +17,7 @@ const Reply = ({id, replyAuthorId}) => {
 
     return (
         <Comment>
-            <Comment.Avatar src='https://www.nretnil.com/avatar/LawrenceEzekielAmos.png' />
+            <Comment.Avatar src={defaultAvatar} />
             <Comment.Content>
                 <Comment.Author as='a'>{replyAuthor ? <span>{replyAuthor.firstName} </span> : <span>Anonymous</span>}</Comment.Author>
                 <Comment.Metadata>

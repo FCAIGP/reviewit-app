@@ -6,9 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import {Form, Modal, Button} from 'react-bootstrap'
 import Reply from './Reply'
 import { StyledHeader, StyledGroup, StyledGroup2} from './formStyle';
-import {Comment, CommentGroup, Divider, Icon} from "semantic-ui-react";
+import {Comment, CommentGroup, Divider, Icon, Statistic} from "semantic-ui-react";
 import moment from "moment";
 
+
+export const defaultAvatar = "https://www.nretnil.com/avatar/LawrenceEzekielAmos.png";
 
 const Review = ({id, authorId, token}) => {
 
@@ -119,9 +121,21 @@ const Review = ({id, authorId, token}) => {
             </Modal>
 
             <ToastContainer autoClose={3000} />
-            <CommentGroup size="small">
+            <CommentGroup size="large">
+                <Divider/>
+
+                <Statistic size="tiny">
+                    <Statistic.Value>{upVotes - downVotes}</Statistic.Value>
+                    <Statistic.Label>Votes</Statistic.Label>
+                </Statistic>
+                <a onClick={() => handleUpvote(id)}>
+                    <Icon name="arrow up" size="large"/>
+                </a>
+                <a onClick={() => handleDownVote(id)}>
+                    <Icon name="arrow down" size="large"/>
+                </a>
                 <Comment>
-                    <Comment.Avatar src='https://www.nretnil.com/avatar/LawrenceEzekielAmos.png' />
+                    <Comment.Avatar src={author && author.image ? author.image : defaultAvatar} />
                     <Comment.Content>
                         <Comment.Author as='a'>
                             {author ? <span>{author.firstName}</span>: <span>Anonymous</span>}
@@ -132,9 +146,10 @@ const Review = ({id, authorId, token}) => {
                         <Comment.Text>
                             <p>{review.body}</p>
 
+                            {review.contact ?
                             <Comment.Metadata>
-                                <span> Contact info: {review.contact}</span>
-                            </Comment.Metadata>
+                                <span> {"Contact info: " + review.contact} </span>
+                            </Comment.Metadata> : ""}
                         </Comment.Text>
                         <Comment.Actions>
                             <Comment.Action>
@@ -142,23 +157,11 @@ const Review = ({id, authorId, token}) => {
                                     Reply
                                 </a>
                             </Comment.Action>
-                            <Comment.Action>
-                                <a onClick={() => handleUpvote(id)}>
-                                    <Icon name="arrow up"/>
-                                </a>
-                            </Comment.Action>
-                            <Comment.Action>
-                                <a onClick={() => handleDownVote(id)}>
-                                    <Icon name="arrow down"/>
-                                </a>
-                            </Comment.Action>
-                            <span> votes: {upVotes - downVotes > 0 ? "+" : ""} {upVotes - downVotes} </span>
-
                         </Comment.Actions>
                     </Comment.Content>
 
 
-                    <Comment.Group size='mini'>
+                    <Comment.Group size='mini' >
                         {replies.map(reply => (
                             <div key={reply.replyId}>
                                 <Reply id = {reply.replyId} replyAuthorId = {reply.authorId} />
@@ -167,7 +170,6 @@ const Review = ({id, authorId, token}) => {
                     </Comment.Group>
                 </Comment>
             </CommentGroup>
-            <Divider/>
 
         </div>
     )
