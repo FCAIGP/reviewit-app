@@ -24,7 +24,7 @@ const Post = ({id, token, companyID, ownerID, userID}) => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        updatePost(post.postId, text, images.split('\s*,\s*'), companyID, token).then((res) => {
+        updatePost(post.postId, text, images.split(','), companyID, token).then((res) => {
             console.log(res)
             toast.success("Post Updated Successfuly!", {position: toast.POSITION.TOP_CENTER})
             handleClose();
@@ -40,7 +40,7 @@ const Post = ({id, token, companyID, ownerID, userID}) => {
             setImages(res.images)
             setText(res.text)
         })
-    }, []);
+    }, [id]);
 
     return (
         <div>
@@ -72,11 +72,11 @@ const Post = ({id, token, companyID, ownerID, userID}) => {
                     <p>Text: {post.text}</p>
                     {
                         post.images.map(image => (
-                            <img width="100" height="100" src={image} key={image}/>
+                            <img alt='' width="100" height="100" src={image} key={image}/>
                         ))
                     }
                     <p>Created Date: {post.createdDate}</p>
-                    {ownerID == userID &&
+                    {ownerID === userID &&
                     <div>
                         <Button onClick={handleShow} variant="primary"> Update Post</Button>
                         <Button onClick={() => handlePostDelete(post.postId)}

@@ -1,19 +1,22 @@
 import Review from "../Review";
 import {Button} from "react-bootstrap";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import AddReviewModal from "../modals/AddReviewModal";
-import {deleteReview} from "../../utils/api";
+import {deleteReview, getReviews} from "../../utils/api";
 import {toast} from "react-toastify";
 
 function ReviewsList(props) {
     const [showAddReview, setShowAddReview] = useState(false)
+    const [reviews, setReviews] = useState([])
 
-    const {reviews, userId, isAdmin, companyId, token, setReviews} = props;
+    const {userId, isAdmin, companyId, token} = props;
 
+    useEffect(()=>{
+        getReviews(companyId).then(res => setReviews(res));
+    }, [companyId])
     const handleReviewDelete = (review_Id) => {
-        {/* TO DO figure out why reviews are not filtered like Posts delete */
-        }
-        deleteReview(review_Id, token).then(v => setReviews(reviews => reviews.filter(p => p.reviewId != review_Id)))
+        /* TO DO figure out why reviews are not filtered like Posts delete */
+        deleteReview(review_Id, token).then(v => setReviews(reviews => reviews.filter(p => p.reviewId !== review_Id)))
         toast.error("Review has been Deleted!", {position: toast.POSITION.TOP_CENTER})
     }
 
@@ -25,7 +28,7 @@ function ReviewsList(props) {
             <button onClick={()=>setShowAddReview(true)}> Add Review</button>
             <br/>
             {
-                reviews.length == 0 ? <h3>No reviews yet</h3> :
+                reviews.length === 0 ? <h3>No reviews yet</h3> :
                     reviews.map(review => (
                         <div key={review.reviewId}>
                             <Review id={review.reviewId} authorId={review.authorId ? review.authorId : null}/>

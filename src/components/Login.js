@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Container, Form, Toast} from 'react-bootstrap';
+import {Button, Container, Form} from 'react-bootstrap';
 import {handleLogin} from "../actions/authedUser";
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';

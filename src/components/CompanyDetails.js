@@ -1,65 +1,63 @@
-import {Button, Form, Modal, Spinner} from 'react-bootstrap'
-import React, {useEffect, useState} from 'react'
-import {addPost, addReview, deletePost, deleteReview, getCompany, getPosts, getReviews} from '../utils/api'
+import {Spinner} from 'react-bootstrap'
+import React, {Fragment, useEffect, useState} from 'react'
+import {getCompany} from '../utils/api'
 import {connect} from 'react-redux'
-import {toast, ToastContainer} from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Review from './Review';
-import Post from './Post'
 import PostsList from './company_details/PostsList';
 import ReviewsList from './company_details/ReviewsList';
 
 import ClaimRequestModal from "./modals/ClaimRequestModal";
-import AddPostModal from './modals/AddPostModal';
-import AddReviewModal from './modals/AddReviewModal';
 
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
     const [company, setCompany] = useState({})
-    const [posts, setPosts] = useState([])
-    const [reviews, setReviews] = useState([])
     const [loading, setLoading] = useState(true)
 
 
     const [showClaimRequest, setShowClaimRequest] = useState(false)
 
     useEffect(() => {
-        getCompany(match.params.companyId).then(res => setCompany(res));
-        getPosts(match.params.companyId).then(res => setPosts(res));
-        getReviews(match.params.companyId).then(res => setReviews(res));
-        setLoading(false)
+        setLoading(true);
+        getCompany(match.params.companyId)
+            .then(res => {
+                setCompany(res)
+                setLoading(false)
+            });
     }, [match.params.companyId]);
 
     return (
         <div>
             <ToastContainer autoClose={3000}/>
             {/* todo : adjust loading spinner place */}
-            {loading && <Spinner animation="border"/>}
-            <div>
-                <h1>Company Details</h1>
-                <p>Name: {company.name}</p>
-                <p>Headquarters: {company.headquarters}</p>
-                <p>Industry: {company.industry}</p>
-                <p>Region: {company.region}</p>
-                <p>Created Date: {company.createdDate}</p>
-                <p>Logo: {company.logoURL}</p>
-                <p>Score up to date: {company.isScoreUpToDate ? "Yes" : "No"}</p>
-                <p>Score: {company.score}</p>
-                <p>Close Status: {company.closeStatus}</p>
+            {loading ? <Spinner animation="border"/> : <Fragment>
+                <div>
+                    <h1>Company Details</h1>
+                    <p>Name: {company.name}</p>
+                    <p>Headquarters: {company.headquarters}</p>
+                    <p>Industry: {company.industry}</p>
+                    <p>Region: {company.region}</p>
+                    <p>Created Date: {company.createdDate}</p>
+                    <p>Logo: {company.logoURL}</p>
+                    <p>Score up to date: {company.isScoreUpToDate ? "Yes" : "No"}</p>
+                    <p>Score: {company.score}</p>
+                    <p>Close Status: {company.closeStatus}</p>
+                    <br/>
+                </div>
+                {
+                    !company.ownerId &&
+                    <button onClick={() => setShowClaimRequest(true)}>Claim Ownership of Company</button>
+                }
+                <ClaimRequestModal show={showClaimRequest} setShow={setShowClaimRequest} companyId={company.companyId}
+                                   token={token}/>
+
                 <br/>
-            </div>
-            {
-                !company.ownerId &&
-                <button onClick={() => setShowClaimRequest(true)}>Claim Ownership of Company</button>
+
+                <PostsList companyId={company.companyId} ownerId={company.ownerId} userId={userId} token={token}/>
+                <ReviewsList companyId={company.companyId} userId={userId} isAdmin={isAdmin} token={token}/>
+            </Fragment>
             }
-            <ClaimRequestModal show={showClaimRequest} setShow={setShowClaimRequest} companyId={company.companyId}
-                               token={token}/>
-
-            <br/>
-
-            <PostsList posts={posts} companyId={company.companyId} ownerId={company.ownerId} userId={userId} token={token} setPosts={setPosts}/>
-            <ReviewsList reviews={reviews} userId = {userId} isAdmin={isAdmin} setReviews={setReviews}/>
         </div>
     )
 }

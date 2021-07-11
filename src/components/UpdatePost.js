@@ -13,7 +13,7 @@ const UpdatePost = (props) => {
 
     const handleUpdate = (e) =>{
         e.preventDefault();
-        updatePost(props.match.params.postId, text, images.split('\s*,\s*'), props.match.params.companyId, props.token)
+        updatePost(props.match.params.postId, text, images.split(','), props.match.params.companyId, props.token)
         props.history.push(`/company/${props.match.params.companyId}`)
         toast.success("Post Updated Successfuly!",{position:toast.POSITION.TOP_CENTER})
     }

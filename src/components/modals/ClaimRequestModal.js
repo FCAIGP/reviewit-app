@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
 import {addClaimRequest} from "../../utils/api";
 import {toast} from "react-toastify";
