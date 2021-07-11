@@ -22,7 +22,7 @@ function PostsList(props) {
             <br/>
             {
                 posts.map(post => (
-                    <Post key={post.postId} id={post.postId} companyID={companyId} ownerID={ownerId} userID={userId}/>
+                    <Post key={post.postId} id={post.postId} companyID={companyId} ownerID={ownerId} userID={userId} setPosts={setPosts}/>
                 ))
             }
         </Fragment>

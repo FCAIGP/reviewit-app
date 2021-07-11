@@ -1,3 +1,4 @@
+import axios from 'axios'
 const api = "/api";
 const auth = "/auth";
 const predict = "https://crsmodel.azurewebsites.net/predict"
@@ -79,7 +80,9 @@ export const isAdmin = (token) => fetch(`${auth}/isadmin`, InitGet(token))
     .then(res => res.ok);
 
 export const getCompany = (id) => fetchRequest(`${api}/company/${id}`, InitGet());
-
+export const addCompany = (name, headquarters, industry, region, logoURL, token) => fetchRequest(`${api}/company`, InitPost({
+    name, headquarters, industry, region, logoURL
+}, token))
 export const getAllCompanies = () =>
     fetchRequest(`${api}/company`, InitGet());
 
@@ -123,6 +126,20 @@ export const getAllClaimRequests = (token) => fetchRequest(`${api}/claimrequest`
 
 export const acceptClaimRequest = (id, token) => fetchRequest(`${api}/ClaimRequest/${id}/accept`, InitPut(null, token));
 export const rejectClaimRequest = (id, token) => fetchRequest(`${api}/ClaimRequest/${id}/reject`, InitPut(null, token));
+
+export const uploadImages = (Images, pushFn) => {
+    const upload = Images.map(img => {
+        const formData = new FormData()
+        formData.append("file", img);
+        formData.append("upload_preset", "pnwecikc");
+        return axios.post("https://api.cloudinary.com/v1_1/dyhfbrmbx/image/upload", formData).then((response) => {
+            pushFn(response.data.url)
+        }).catch(error => {
+            console.log(error)
+        })
+    })
+    return upload
+}
 
 export const predictTagsFor = (text, threshold = 0.08) => fetchRequest(`${predict}`, InitPost({
     text,

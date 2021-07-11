@@ -6,12 +6,10 @@ import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PostsList from './company_details/PostsList';
 import ReviewsList from './company_details/ReviewsList';
-
 import ClaimRequestModal from "./modals/ClaimRequestModal";
 import {Container, Divider, Button, Image , Header , Icon} from "semantic-ui-react";
 
 export const defaultImageUrl = "https://pinkladies24-7.com/assets/images/defaultimg.png";
-
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
 

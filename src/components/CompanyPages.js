@@ -3,6 +3,7 @@ import {Table , Container} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 import {getAllCompanies} from '../utils/api'
 import {Spinner} from 'react-bootstrap'
+import AddCompanyModal from './modals/AddCompanyModal'
 import styled, { keyframes } from 'styled-components';
 import { fadeIn  } from 'react-animations';
 import { Image , Input , Header , Icon } from 'semantic-ui-react';
@@ -14,14 +15,14 @@ const BouncyDiv = styled.div`
   animation: 2s ${bounceAnimation};
 `;
 
-
-
 const CompanyPages = () => {
 
 
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+
+    const [addCompanyShow, setAddCompanyShow] = useState(false)
 
     useEffect(() => {
         getAllCompanies().then(res => setCompanies(res));
@@ -51,6 +52,8 @@ const CompanyPages = () => {
 
                     {/* todo : adjust loading spinner place */}
                     {loading ? <Spinner animation="border" /> : <></>}
+                     <AddCompanyModal show={addCompanyShow} setShow={setAddCompanyShow} setCompanies={setCompanies}/>
+                     <button onClick={() => setAddCompanyShow(true)}>Add Company Page</button>
                     <Table striped bordered hover>
                         <thead>
                         <tr>
