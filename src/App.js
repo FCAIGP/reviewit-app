@@ -12,6 +12,7 @@ import ClaimRequestList from "./components/ClaimRequestList";
 import {connect} from 'react-redux';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {handleRenewToken} from './actions/authedUser';
+import 'semantic-ui-css/semantic.min.css';
 import UpdatePost from './components/UpdatePost';
 
 class App extends Component {

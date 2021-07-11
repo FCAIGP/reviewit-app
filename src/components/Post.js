@@ -47,7 +47,7 @@ const Post = ({ id, token, companyID, ownerID, userID, setPosts }) => {
             setImages(res.images)
             setText(res.text)
         })
-    }, []);
+    }, [id]);
 
     return (
         <div>
@@ -79,11 +79,11 @@ const Post = ({ id, token, companyID, ownerID, userID, setPosts }) => {
                     <p>Text: {post.text}</p>
                     {
                         post.images.map(image => (
-                            <img width="100" height="100" src={image} key={image} />
+                            <img alt ='' width="100" height="100" src={image} key={image} />
                         ))
                     }
                     <p>Created Date: {post.createdDate}</p>
-                    {ownerID == userID &&
+                    {ownerID === userID &&
                         <div>
                             <Button onClick={() => setShowUpdate(true)} variant="primary"> Update Post</Button>
                             <Button onClick={() => handlePostDelete(post.postId)}

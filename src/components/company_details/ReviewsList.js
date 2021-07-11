@@ -1,31 +1,30 @@
 import Review from "../Review";
 import {Button} from "react-bootstrap";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import AddReviewModal from "../modals/AddReviewModal";
-import {deleteReview} from "../../utils/api";
+import {deleteReview, getReviews} from "../../utils/api";
 import {toast} from "react-toastify";
 
 function ReviewsList(props) {
     const [showAddReview, setShowAddReview] = useState(false)
     const [tagSearch, setTagSearch] = useState("")
+    const [reviews, setReviews] = useState([])
 
-    const {reviews, userId, isAdmin, companyId, token, setReviews} = props;
+    const {userId, isAdmin, companyId, token} = props;
 
     const filterReviews = () => {
         if(!tagSearch) return reviews;
         return reviews.filter(review => review.tags.some(r => tagSearch.split(',').map(tag => tag.trim()).includes(r)))
     }
-
+    
     const filteredReviews = filterReviews();
+    useEffect(()=>{
+        getReviews(companyId).then(res => setReviews(res));
+    }, [companyId])
     const handleReviewDelete = (review_Id) => {
-        {/* TO DO figure out why reviews are not filtered like Posts delete */
-        }
-        deleteReview(review_Id, token).then((v) => {
-            setReviews(reviews => reviews.filter(p => p.reviewId != review_Id))
-            toast.error("Review has been Deleted!", {position: toast.POSITION.TOP_CENTER})
-        }).catch(error => {
-            console.log(error)
-        })
+        /* TO DO figure out why reviews are not filtered like Posts delete */
+        deleteReview(review_Id, token).then(v => setReviews(reviews => reviews.filter(p => p.reviewId !== review_Id)))
+        toast.error("Review has been Deleted!", {position: toast.POSITION.TOP_CENTER})
     }
 
     return (
@@ -43,7 +42,7 @@ function ReviewsList(props) {
             <br/>
 
             {
-                reviews.length == 0 ? <h3>No reviews yet</h3> :
+                reviews.length === 0 ? <h3>No reviews yet</h3> :
                        filteredReviews.map(res => (
                             <div key={res.reviewId}>
                             <Review id={res.reviewId} authorId={res.authorId ? res.authorId : null}/>

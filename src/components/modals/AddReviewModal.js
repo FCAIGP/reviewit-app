@@ -1,17 +1,33 @@
 import React, {useState} from 'react'
 import {Button, Form, Modal} from "react-bootstrap";
-import {addReview} from "../../utils/api";
+import {addReview, predictTagsFor} from "../../utils/api";
 import {toast} from "react-toastify";
-import {StyledGroup, StyledHeader, StyledGroup2} from '../formStyle'
+import {StyledGroup, StyledGroup2, StyledHeader} from '../formStyle'
+
 function AddReviewModal(props) {
 
-    const [contactInfo, setContactInfo] = useState(null)
-    const [salary, setSalary] = useState(null)
-    const [jobDescription, setJobDescription] = useState(null)
-    const [reviewBody, setReviewBody] = useState(null)
-    const [reviewTags, setReviewTags] = useState(null)
+    const TYPING_INTERVAL = 2500;
+
+    const [contactInfo, setContactInfo] = useState('')
+    const [salary, setSalary] = useState('')
+    const [jobDescription, setJobDescription] = useState('')
+    const [reviewBody, setReviewBody] = useState('')
+    const [reviewTags, setReviewTags] = useState('')
     const [isAnonymous, setIsAnonymous] = useState(true)
     const [reviewValidated, setReviewValidated] = useState(false);
+    const [typingTimer, setTypingTimer] = useState(null);
+    const onReviewBodyKeyDown = (e) => {
+        clearTimeout(typingTimer);
+    }
+    const onReviewBodyKeyUp = (e) => {
+        clearTimeout(typingTimer);
+        setTypingTimer(setTimeout(handleTagsAPI, TYPING_INTERVAL));
+    }
+    const handleTagsAPI = () => {
+        predictTagsFor(reviewBody)
+            .then(arr => setReviewTags(arr.join(",")))
+            .catch((e) => console.log(e));
+    }
 
     const {show, setShow, companyId, token, setReviews, userId} = props;
 
@@ -21,20 +37,20 @@ function AddReviewModal(props) {
             e.preventDefault();
             e.stopPropagation();
         } else {
-            addReview(contactInfo, salary, jobDescription, reviewBody, reviewTags.split('\s*,\s*'), companyId, isAnonymous, token)
+            addReview(contactInfo, salary, jobDescription, reviewBody, reviewTags.split(','), companyId, isAnonymous, token)
                 .then((v) => {
                     setReviews(reviews => [...reviews, v])
-                    setReviewBody(null)
-                    setSalary(null)
-                    setContactInfo(null)
-                    setJobDescription(null)
-                    setReviewTags(null)
+                    setReviewBody('')
+                    setSalary('')
+                    setContactInfo('')
+                    setJobDescription('')
+                    setReviewTags('')
                     setIsAnonymous(true)
                     setShow(false)
                     toast.success("Added Review Successfuly!", {position: toast.POSITION.TOP_CENTER})
                 }).catch(error => {
-                    toast.error("Failed to add review", {position: toast.POSITION.TOP_CENTER})
-                })
+                toast.error("Failed to add review", {position: toast.POSITION.TOP_CENTER})
+            })
         }
         setReviewValidated(true);
         e.preventDefault();
@@ -64,7 +80,10 @@ function AddReviewModal(props) {
                     <StyledGroup>
                         <Form.Label>Body</Form.Label>
                         <Form.Control required as="textarea" rows={3} value={reviewBody}
-                                      onChange={e => setReviewBody(e.target.value)}/>
+                                      onChange={e => setReviewBody(e.target.value)}
+                                      onKeyUp={onReviewBodyKeyUp}
+                                      onKeyDown={onReviewBodyKeyDown}
+                        />
                         <Form.Control.Feedback type="invalid">Review body can't be empty.</Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </StyledGroup>
@@ -77,7 +96,7 @@ function AddReviewModal(props) {
                     {
                         userId &&
                         <StyledGroup>
-                            <Form.Check type="checkbox" label="Anonymous?" defaultChecked={isAnonymous}
+                            <Form.Check type="checkbox" label="Anonymous?" checked={isAnonymous}
                                         onChange={e => setIsAnonymous(e.target.checked)}/>
                         </StyledGroup>
                     }

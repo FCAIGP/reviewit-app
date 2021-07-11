@@ -1,6 +1,7 @@
 import axios from 'axios'
 const api = "/api";
 const auth = "/auth";
+const predict = "https://crsmodel.azurewebsites.net/predict"
 
 const InitGet = (token = null) => ({
     method: 'get',
@@ -97,7 +98,7 @@ export const Upvote = (id, token) => fetchRequest(`${api}/Review/${id}/upvote`, 
 export const DownVote = (id, token) => fetchRequest(`${api}/Review/${id}/downvote`, InitPut(null, token));
 
 export const getReplies = (id) => fetchRequest(`${api}/Review/${id}/replies`, InitGet());
-export const addReply = (parentId, body, token) => fetchRequest(`${api}/Reply`, InitPost({parentId, body},token))
+export const addReply = (parentId, body, token) => fetchRequest(`${api}/Reply`, InitPost({parentId, body}, token))
 export const getReply = (id) => fetchRequest(`${api}/Reply/${id}`, InitGet())
 
 export const getPosts = (id) => fetchRequest(`${api}/company/${id}/posts`, InitGet());
@@ -112,7 +113,14 @@ export const updatePost = (id, text, images, companyId, token) =>
     fetchRequest(`${api}/Post/${id}`, InitPut({text, images, companyId}, token))
 
 export const addClaimRequest = (description, title, identificationCard, proofOfWork, linkedInAccount, companyID, token) =>
-    fetchRequest(`${api}/ClaimRequest`, InitPost({description, title, identificationCard, proofOfWork, linkedInAccount, companyID}, token));
+    fetchRequest(`${api}/ClaimRequest`, InitPost({
+        description,
+        title,
+        identificationCard,
+        proofOfWork,
+        linkedInAccount,
+        companyID
+    }, token));
 
 export const getAllClaimRequests = (token) => fetchRequest(`${api}/claimrequest`, InitGet(token));
 
@@ -132,3 +140,8 @@ export const uploadImages = (Images, pushFn) => {
     })
     return upload
 }
+
+export const predictTagsFor = (text, threshold = 0.08) => fetchRequest(`${predict}`, InitPost({
+    text,
+    threshold
+})).then(obj => Object.keys(obj.prediction));

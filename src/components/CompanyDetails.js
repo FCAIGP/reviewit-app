@@ -1,60 +1,107 @@
 import {Spinner} from 'react-bootstrap'
-import React, {useEffect, useState} from 'react'
-import {getCompany, getPosts, getReviews} from '../utils/api'
+import React, {Fragment, useEffect, useState} from 'react'
+import {getCompany} from '../utils/api'
 import {connect} from 'react-redux'
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PostsList from './company_details/PostsList';
 import ReviewsList from './company_details/ReviewsList';
 import ClaimRequestModal from "./modals/ClaimRequestModal";
+import {Container, Divider, Button, Image , Header , Icon} from "semantic-ui-react";
+
+export const defaultImageUrl = "https://pinkladies24-7.com/assets/images/defaultimg.png";
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
     const [company, setCompany] = useState({})
-    const [posts, setPosts] = useState([])
-    const [reviews, setReviews] = useState([])
     const [loading, setLoading] = useState(true)
 
 
     const [showClaimRequest, setShowClaimRequest] = useState(false)
 
     useEffect(() => {
-        getCompany(match.params.companyId).then(res => setCompany(res));
-        getPosts(match.params.companyId).then(res => setPosts(res));
-        getReviews(match.params.companyId).then(res => setReviews(res));
-        setLoading(false)
+        setLoading(true);
+        getCompany(match.params.companyId)
+            .then(res => {
+                setCompany(res)
+                setLoading(false)
+            });
     }, [match.params.companyId]);
 
     return (
-        <div>
-            <ToastContainer autoClose={3000}/>
-            {/* todo : adjust loading spinner place */}
-            {loading && <Spinner animation="border"/>}
-            <div>
-                <h1>Company Details</h1>
-                <p>Name: {company.name}</p>
-                <p>Headquarters: {company.headquarters}</p>
-                <p>Industry: {company.industry}</p>
-                <p>Region: {company.region}</p>
-                <p>Created Date: {company.createdDate}</p>
-                <p>Logo: {company.logoURL}</p>
-                <p>Score up to date: {company.isScoreUpToDate ? "Yes" : "No"}</p>
-                <p>Score: {company.score}</p>
-                <p>Close Status: {company.closeStatus}</p>
-                <br/>
-            </div>
-            {
-                !company.ownerId &&
-                <button onClick={() => setShowClaimRequest(true)}>Claim Ownership of Company</button>
-            }
-            <ClaimRequestModal show={showClaimRequest} setShow={setShowClaimRequest} companyId={company.companyId}
-                               token={token}/>
-
+        <Container>
             <br/>
+            {/*<ToastContainer autoClose={3000}/>*/}
+            {/* todo : adjust loading spinner place */}
+            {loading ? <Spinner animation="border"/> : <div>
+                <div>
+                    <h1>Company Details</h1>
+                    <Image src={company.logoURL ? company.logoURL : defaultImageUrl} spaced size='small' verticalAlign='middle'/>
+                    <h2>{company.name}</h2>
 
-            <PostsList posts={posts} companyId={company.companyId} ownerId={company.ownerId} userId={userId} token={token} setPosts={setPosts}/>
-            <ReviewsList companyId={company.companyId}reviews={reviews} userId = {userId} isAdmin={isAdmin} setReviews={setReviews}/>
-        </div>
+                    <Header>
+                        <Icon name='chess'/>
+                        <Header.Content>
+                            Headquarters: {company.headquarters}
+                        </Header.Content>
+                    </Header>
+                    <Header>
+                        <Icon name='industry'/>
+                        <Header.Content>
+                            Industry: {company.industry}
+                        </Header.Content>
+                    </Header>
+                    <Header>
+                        <Icon name='world'/>
+                        <Header.Content>
+                            Region: {company.region}
+                        </Header.Content>
+                    </Header>
+
+                    <Header>
+                        <Icon name='calendar times'/>
+                        <Header.Content>
+                            Created Date: {company.createdDate}
+                        </Header.Content>
+                    </Header>
+
+                    <Header>
+                        <Icon name='radio'/>
+                        <Header.Content>
+                            Score up to date: {company.isScoreUpToDate ? "Yes" : "No"}
+                        </Header.Content>
+                    </Header>
+                    <Header>
+                        <Icon name='star'/>
+                        <Header.Content>
+                            Score: {company.score}
+                        </Header.Content>
+                    </Header>
+                    <Header>
+                        <Icon name='user'/>
+                        <Header.Content>
+                            Close Status: {company.closeStatus}
+                        </Header.Content>
+                    </Header>
+                    <Divider/>
+                </div>
+
+                {
+                    !company.ownerId &&
+                    <Button primary onClick={() => setShowClaimRequest(true)} content="Claim Ownership of Company" icon="legal"/>
+                }
+
+
+                <ClaimRequestModal show={showClaimRequest} setShow={setShowClaimRequest} companyId={company.companyId}
+                                   token={token}/>
+
+                <br/>
+
+                <PostsList companyId={company.companyId} ownerId={company.ownerId} userId={userId} token={token}/>
+                <ReviewsList companyId={company.companyId} userId={userId} isAdmin={isAdmin} token={token}/>
+            </div>
+            }
+        </Container>
     )
 }
 

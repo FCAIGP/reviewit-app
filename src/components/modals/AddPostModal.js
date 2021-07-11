@@ -7,7 +7,6 @@ import {addPost, uploadImages} from "../../utils/api";
 
 function AddPostModal(props) {
     const [text, setText] = useState("")
-    const [images, setImages] = useState([])
     const [postValidated, setPostValidated] = useState(false);
     const [postImage, setPostImage] = useState([])
 
@@ -24,7 +23,6 @@ function AddPostModal(props) {
             axios.all(upload).then(() => {
                 addPost(text, urlList, companyId, token).then((v) => {
                     setPosts(posts => [...posts, v])
-                    setImages([])
                     setText("")
                     setPostImage([])
                 }).catch(error => {

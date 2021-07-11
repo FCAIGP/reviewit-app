@@ -10,7 +10,7 @@ const Reply = ({id, replyAuthorId}) => {
     useEffect(() => {
         getReply(id).then(res => setReply(res))
         getUser(replyAuthorId).then(res => setReplyAuthor(res))
-    },[]);
+    },[id, replyAuthorId]);
 
     return (
         <div>
