@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {Form, Modal, Button} from 'react-bootstrap'
 import Reply from './Reply'
 import { StyledHeader, StyledGroup, StyledGroup2} from './formStyle';
+import {Comment, CommentGroup, Divider, Icon} from "semantic-ui-react";
+
 const Review = ({id, authorId, token}) => {
 
     const [review, setReview] = useState({})
@@ -33,9 +35,9 @@ const Review = ({id, authorId, token}) => {
                 console.log(error)
             })
         })
-        .catch((error) => {
-            toast.error("You are not authorized to perform voting, Please log in!",{position:toast.POSITION.TOP_CENTER})
-        })
+            .catch((error) => {
+                toast.error("You are not authorized to perform voting, Please log in!",{position:toast.POSITION.TOP_CENTER})
+            })
     }
 
     function handleDownVote(id){
@@ -48,9 +50,9 @@ const Review = ({id, authorId, token}) => {
                 console.log(error)
             })
         })
-        .catch((error) => {
-            toast.error("You are not authorized to perform voting, Please log in!",{position:toast.POSITION.TOP_CENTER})
-        })
+            .catch((error) => {
+                toast.error("You are not authorized to perform voting, Please log in!",{position:toast.POSITION.TOP_CENTER})
+            })
     }
 
     const handleAddReply = (e) =>{
@@ -64,9 +66,9 @@ const Review = ({id, authorId, token}) => {
                 setReplies(replies => [...replies, v])
                 setReplyBody("")
             })
-            .catch(error => {
-                console.log(error)
-            })
+                .catch(error => {
+                    console.log(error)
+                })
             AddReplyClose()
             toast.success("Added Reply Successfully!", {position:toast.POSITION.TOP_CENTER})
         }
@@ -107,38 +109,64 @@ const Review = ({id, authorId, token}) => {
                         <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
                     </StyledGroup>
                     <StyledGroup2>
-                    <Button variant="primary" type="submit">
-                        Submit
-                    </Button>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
                     </StyledGroup2>
                 </Form>
             </Modal>
 
             <ToastContainer autoClose={3000} />
-            {
-                author ? <p>Author : {author.firstName}</p> : <p>Author : Anonymous</p>
-            }
-            <p>Created at: {review.created}</p>
-            <p>Body: {review.body}</p>
-            {
-                review.contact ? <p>Contact info: {review.contact}</p> : <p>Contact Info: None</p>
-            }
-            <p>Upvotes: {upVotes}</p>
-            <p>DownVotes: {downVotes}</p>
-            <button onClick={() => handleUpvote(id)}>Upvote</button>
-            <button onClick={() => handleDownVote(id)}>Downvote</button>
-            <button onClick = {AddReplyShow}>Add reply</button>
-            <div className="col-md-10 col-sm-10">
-                <h4>Replies</h4>
-                {
-                    replies.map(reply => (
-                        <div key={reply.replyId}>
-                            <Reply id = {reply.replyId} replyAuthorId = {reply.authorId} />
-                            <br></br>
-                        </div>
-                    ))
-                }
-            </div>
+            <CommentGroup size="small">
+                <Comment>
+                    <Comment.Avatar src='https://www.nretnil.com/avatar/LawrenceEzekielAmos.png' />
+                    <Comment.Content>
+                        <Comment.Author as='a'>
+                            {author ? <span>{author.firstName}</span>: <span>Anonymous</span>}
+                        </Comment.Author>
+                        <Comment.Metadata>
+                            {review.created}
+                        </Comment.Metadata>
+                        <Comment.Text>
+                            <p>{review.body}</p>
+
+                            <Comment.Metadata>
+                                <span> Contact info: {review.contact}</span>
+                            </Comment.Metadata>
+                        </Comment.Text>
+                        <Comment.Actions>
+                            <Comment.Action>
+                                <a onClick = {AddReplyShow}>
+                                    Reply
+                                </a>
+                            </Comment.Action>
+                            <Comment.Action>
+                                <a onClick={() => handleUpvote(id)}>
+                                    <Icon name="arrow up"/>
+                                </a>
+                            </Comment.Action>
+                            <Comment.Action>
+                                <a onClick={() => handleDownVote(id)}>
+                                    <Icon name="arrow down"/>
+                                </a>
+                            </Comment.Action>
+                            <span> votes: {upVotes - downVotes > 0 ? "+" : ""} {upVotes - downVotes} </span>
+
+                        </Comment.Actions>
+                    </Comment.Content>
+
+
+                    <Comment.Group size='mini'>
+                        {replies.map(reply => (
+                            <div key={reply.replyId}>
+                                <Reply id = {reply.replyId} replyAuthorId = {reply.authorId} />
+                            </div>
+                        ))}
+                    </Comment.Group>
+                </Comment>
+            </CommentGroup>
+            <Divider/>
+
         </div>
     )
 }

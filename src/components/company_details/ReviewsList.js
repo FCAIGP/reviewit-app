@@ -38,7 +38,7 @@ function ReviewsList(props) {
             </div>
             
             <h1>Reviews</h1>
-            <button onClick={()=>setShowAddReview(true)}> Add Review</button>
+            <Button onClick={()=>setShowAddReview(true)}> Add Review</Button>
             <br/>
 
             {
@@ -50,7 +50,6 @@ function ReviewsList(props) {
                                 isAdmin ? <Button onClick={() => handleReviewDelete(res.reviewId)}
                                                   variant="danger">Delete</Button> : <></>
                             }
-                            <p>-------------------------------------------------------------------------------</p>
                         </div>
                        ))
             }
