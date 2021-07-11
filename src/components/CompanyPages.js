@@ -6,6 +6,7 @@ import {Spinner} from 'react-bootstrap'
 import styled, { keyframes } from 'styled-components';
 import { fadeIn  } from 'react-animations';
 import { Image , Input , Header , Icon } from 'semantic-ui-react';
+import {defaultImageUrl} from "./CompanyDetails";
 
 const bounceAnimation = keyframes`${fadeIn }`;
 
@@ -13,7 +14,7 @@ const BouncyDiv = styled.div`
   animation: 2s ${bounceAnimation};
 `;
 
-const defaultImageUrl = "https://pinkladies24-7.com/assets/images/defaultimg.png";
+
 
 const CompanyPages = () => {
 
