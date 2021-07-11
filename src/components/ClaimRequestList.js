@@ -50,8 +50,8 @@ const ClaimRequestList = ({token, isAdmin}) => {
                         <tr key={req.claimRequestId}>
                             <td>{req.description}</td>
                             <td>{req.title}</td>
-                            <td>{req.identificationCard}</td>
-                            <td>{req.proofOfWork}</td>
+                            <td><img src={req.identificationCard} width="100" height="100"/></td>
+                            <td><img src={req.proofOfWork} width="100" height="100"/></td>
                             <td>{req.linkedInAccount}</td>
                             <td>{req.claimStatus}</td>
                             {req.claimStatus === 2 ?

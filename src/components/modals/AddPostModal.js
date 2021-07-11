@@ -3,7 +3,7 @@ import {Button, Form, Modal} from 'react-bootstrap'
 import {StyledGroup, StyledGroup2, StyledHeader} from '../formStyle'
 import {toast} from 'react-toastify';
 import axios from 'axios'
-import {addPost} from "../../utils/api";
+import {addPost, uploadImages} from "../../utils/api";
 
 function AddPostModal(props) {
     const [text, setText] = useState("")
@@ -20,25 +20,14 @@ function AddPostModal(props) {
             e.stopPropagation();
         } else {
             const urlList = []
-            const upload = postImage.map(img => {
-                const formData = new FormData()
-                formData.append("file", img);
-                formData.append("upload_preset", "pnwecikc");
-                return axios.post("https://api.cloudinary.com/v1_1/dyhfbrmbx/image/upload", formData).then((response) => {
-                    urlList.push(response.data.url)
-                    setImages(images => [...images, response.data.url])
-                }).catch(error => {
-                    console.log(error)
-                })
-            })
+            const upload =  uploadImages(postImage, urlList.push.bind(urlList))
             axios.all(upload).then(() => {
                 addPost(text, urlList, companyId, token).then((v) => {
                     setPosts(posts => [...posts, v])
                     setImages([])
                     setText("")
                     setPostImage([])
-                })
-                    .catch(error => {
+                }).catch(error => {
                         console.log(error)
                     })
                 setShow(false);

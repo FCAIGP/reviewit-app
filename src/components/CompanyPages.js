@@ -3,6 +3,7 @@ import {Table} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 import {getAllCompanies} from '../utils/api'
 import {Spinner} from 'react-bootstrap'
+import AddCompanyModal from './modals/AddCompanyModal'
 
 const CompanyPages = () => {
 
@@ -10,6 +11,8 @@ const CompanyPages = () => {
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+
+    const [addCompanyShow, setAddCompanyShow] = useState(false)
 
     useEffect(() => {
         getAllCompanies().then(res => setCompanies(res));
@@ -20,6 +23,8 @@ const CompanyPages = () => {
         <div>
             {/* todo : adjust loading spinner place */}
             {loading ? <Spinner animation="border" /> : <></>}
+            <AddCompanyModal show={addCompanyShow} setShow={setAddCompanyShow} setCompanies={setCompanies}/>
+            <button onClick={() => setAddCompanyShow(true)}>Add Company Page</button>
             <h1>Company List</h1>
             <input type="text" value={search} onChange={e=>setSearch(e.target.value)}/>
             <Table borderless>
