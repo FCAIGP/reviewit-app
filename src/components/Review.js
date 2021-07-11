@@ -7,6 +7,8 @@ import {Form, Modal, Button} from 'react-bootstrap'
 import Reply from './Reply'
 import { StyledHeader, StyledGroup, StyledGroup2} from './formStyle';
 import {Comment, CommentGroup, Divider, Icon} from "semantic-ui-react";
+import moment from "moment";
+
 
 const Review = ({id, authorId, token}) => {
 
@@ -125,7 +127,7 @@ const Review = ({id, authorId, token}) => {
                             {author ? <span>{author.firstName}</span>: <span>Anonymous</span>}
                         </Comment.Author>
                         <Comment.Metadata>
-                            {review.created}
+                            {moment.utc(review.created).fromNow()}
                         </Comment.Metadata>
                         <Comment.Text>
                             <p>{review.body}</p>

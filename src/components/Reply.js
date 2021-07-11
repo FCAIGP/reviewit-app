@@ -2,6 +2,7 @@ import React from 'react'
 import {useEffect, useState} from 'react'
 import {getReply, getUser} from '../utils/api'
 import {Comment} from "semantic-ui-react";
+import moment from "moment";
 
 
 const Reply = ({id, replyAuthorId}) => {
@@ -20,7 +21,7 @@ const Reply = ({id, replyAuthorId}) => {
             <Comment.Content>
                 <Comment.Author as='a'>{replyAuthor ? <span>{replyAuthor.firstName} </span> : <span>Anonymous</span>}</Comment.Author>
                 <Comment.Metadata>
-                    {reply && reply.date}
+                    {reply && moment.utc(reply.date).fromNow()}
                 </Comment.Metadata>
                 <Comment.Text>{reply && reply.body}</Comment.Text>
             </Comment.Content>
