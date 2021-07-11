@@ -1,18 +1,12 @@
-import {Button, Form, Modal, Spinner} from 'react-bootstrap'
+import {Spinner} from 'react-bootstrap'
 import React, {useEffect, useState} from 'react'
-import {addPost, addReview, deletePost, deleteReview, getCompany, getPosts, getReviews} from '../utils/api'
+import {getCompany, getPosts, getReviews} from '../utils/api'
 import {connect} from 'react-redux'
-import {toast, ToastContainer} from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Review from './Review';
-import Post from './Post'
 import PostsList from './company_details/PostsList';
 import ReviewsList from './company_details/ReviewsList';
-
 import ClaimRequestModal from "./modals/ClaimRequestModal";
-import AddPostModal from './modals/AddPostModal';
-import AddReviewModal from './modals/AddReviewModal';
-
 
 const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
@@ -59,7 +53,7 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
             <br/>
 
             <PostsList posts={posts} companyId={company.companyId} ownerId={company.ownerId} userId={userId} token={token} setPosts={setPosts}/>
-            <ReviewsList reviews={reviews} userId = {userId} isAdmin={isAdmin} setReviews={setReviews}/>
+            <ReviewsList companyId={company.companyId}reviews={reviews} userId = {userId} isAdmin={isAdmin} setReviews={setReviews}/>
         </div>
     )
 }
