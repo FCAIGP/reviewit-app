@@ -1,6 +1,6 @@
 import axios from 'axios'
-const api = "https://reviewitserver.azurewebsites.net/api";
-const auth = "https://reviewitserver.azurewebsites.net/auth";
+const api = "/api";
+const auth = "/auth";
 const predict = "https://crsmodel.azurewebsites.net/predict"
 
 const InitGet = (token = null) => ({
