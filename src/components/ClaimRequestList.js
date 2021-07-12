@@ -4,17 +4,29 @@ import {getAllClaimRequests, acceptClaimRequest, rejectClaimRequest} from '../ut
 import {connect} from 'react-redux'
 import {Redirect} from "react-router-dom";
 import {Spinner} from 'react-bootstrap'
+import {toast, ToastContainer} from 'react-toastify'
 const ClaimRequestList = ({token, isAdmin}) => {
 
     const [claimRequests, setClaimRequests] = useState([]);
     const [loading, setLoading] = useState(true)
 
     function Accept(id){
-         acceptClaimRequest(id, token).then(v => alert(v.message))
+         acceptClaimRequest(id, token).then(v => {
+             toast.success("Accepted Claim Request!", { position: toast.POSITION.TOP_CENTER })
+            getAllClaimRequests(token).then(res => setClaimRequests(res)).catch(e=> console.log(v));
+         }).catch(error => {
+             toast.error("You are not allowed to to do this action", { position: toast.POSITION.TOP_CENTER })
+         })
     }
 
     function Reject(id){
-        rejectClaimRequest(id, token).then(v => alert(v.message))
+        rejectClaimRequest(id, token).then(v => {
+            toast.success("Rejected Claim Request!", { position: toast.POSITION.TOP_CENTER })
+            getAllClaimRequests(token).then(res => setClaimRequests(res)).catch(e=> console.log(v));
+        })
+        .catch(error => {
+            toast.error("You are not allowed to to do this action", { position: toast.POSITION.TOP_CENTER })
+        })
     }
 
     useEffect(() => {
@@ -30,6 +42,7 @@ const ClaimRequestList = ({token, isAdmin}) => {
         <div>
             {/* todo : adjust loading spinner place */}
             {loading ? <Spinner animation="border" /> : <></>}
+            <ToastContainer autoClose={3000} />
             <h1>Claim Requests</h1>
             <Table borderless>
                 <thead>
