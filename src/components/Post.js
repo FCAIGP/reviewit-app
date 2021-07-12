@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { deletePost, getPost, updatePost, uploadImages } from '../utils/api'
-import { Button, Form, Modal } from 'react-bootstrap'
+import { Form, Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify';
 import { StyledGroup, StyledGroup2, StyledHeader } from './formStyle'
 import axios from 'axios'
+import {Item, Image, Button, ItemGroup, Divider} from "semantic-ui-react";
+import moment from "moment";
 
 const Post = ({ id, token, companyID, ownerID, userID, setPosts }) => {
 
@@ -75,24 +77,31 @@ const Post = ({ id, token, companyID, ownerID, userID, setPosts }) => {
 
             {
                 post &&
-                <div>
-                    <p>Text: {post.text}</p>
-                    {
-                        post.images.map(image => (
-                            <img alt ='' width="100" height="100" src={image} key={image} />
-                        ))
-                    }
-                    <p>Created Date: {post.createdDate}</p>
-                    {ownerID === userID &&
-                        <div>
-                            <Button onClick={() => setShowUpdate(true)} variant="primary"> Update Post</Button>
-                            <Button onClick={() => handlePostDelete(post.postId)}
-                                variant="danger">Delete</Button>
-                        </div>
-                    }
-                </div>
+                    <ItemGroup>
+                        <Item>
+                            <Item.Content>
+                                <Item.Header>Header</Item.Header>
+                                <Item.Extra>Created Date: {moment.utc(post.createdDate).fromNow()}</Item.Extra>
+                                <Item.Description>
+                                    {
+                                        post.images.map(image => (
+                                            <Image src={image} key={image} size="large" />
+                                        ))
+                                    }
+                                    { post.text }
+                                </Item.Description>
+
+
+                            {ownerID === userID &&
+                                <Item.Extra>
+                                    <Button primary icon='undo' onClick={() => setShowUpdate(true)} content='Update Post'/>
+                                    <Button negative icon='delete' onClick={() => handlePostDelete(post.postId)} content='Delete'/>
+                                </Item.Extra>
+                            }
+                            </Item.Content>
+                        </Item>
+                    </ItemGroup>
             }
-            <br />
         </div>
     )
 }
