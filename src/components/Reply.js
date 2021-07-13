@@ -1,6 +1,9 @@
 import React from 'react'
 import {useEffect, useState} from 'react'
 import {getReply, getUser} from '../utils/api'
+import {Comment} from "semantic-ui-react";
+import moment from "moment";
+import {defaultAvatar} from "./Review";
 
 const Reply = ({id, replyAuthorId}) => {
 
@@ -13,14 +16,16 @@ const Reply = ({id, replyAuthorId}) => {
     },[id, replyAuthorId]);
 
     return (
-        <div>
-            {replyAuthor ? <p>Reply Author: {replyAuthor.firstName} </p> : <></>}
-            {reply?
-            <div> 
-             <p>Created at: {reply && reply.date}</p>
-             <p>Body: {reply && reply.body}</p> </div> : 
-             <></>}
-        </div>
+        <Comment>
+            <Comment.Avatar src={defaultAvatar} />
+            <Comment.Content>
+                <Comment.Author as='a'>{replyAuthor ? <span>{replyAuthor.firstName} </span> : <span>Anonymous</span>}</Comment.Author>
+                <Comment.Metadata>
+                    {reply && moment.utc(reply.date).fromNow()}
+                </Comment.Metadata>
+                <Comment.Text>{reply && reply.body}</Comment.Text>
+            </Comment.Content>
+        </Comment>
     )
 }
 

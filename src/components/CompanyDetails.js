@@ -7,7 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import PostsList from './company_details/PostsList';
 import ReviewsList from './company_details/ReviewsList';
 import ClaimRequestModal from "./modals/ClaimRequestModal";
-import {Container, Divider, Button, Image , Header , Icon} from "semantic-ui-react";
+import {Container, Divider, Button, Image , Header , Icon , Rating} from "semantic-ui-react";
+import moment from "moment";
 
 export const defaultImageUrl = "https://pinkladies24-7.com/assets/images/defaultimg.png";
 
@@ -61,7 +62,7 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                     <Header>
                         <Icon name='calendar times'/>
                         <Header.Content>
-                            Created Date: {company.createdDate}
+                            Created Date: {moment.utc(company.createdDate).fromNow()}
                         </Header.Content>
                     </Header>
 
@@ -74,7 +75,7 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                     <Header>
                         <Icon name='star'/>
                         <Header.Content>
-                            Score: {company.score}
+                            Score: <Rating icon='star' defaultRating={company.score} maxRating={5} disabled/>
                         </Header.Content>
                     </Header>
                     <Header>
