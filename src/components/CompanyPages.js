@@ -6,7 +6,7 @@ import {Spinner} from 'react-bootstrap'
 import AddCompanyModal from './modals/AddCompanyModal'
 import styled, { keyframes } from 'styled-components';
 import { fadeIn  } from 'react-animations';
-import { Image , Input , Header , Icon } from 'semantic-ui-react';
+import { Image , Input , Header , Button , Icon , Card } from 'semantic-ui-react';
 import {defaultImageUrl} from "./CompanyDetails";
 
 const bounceAnimation = keyframes`${fadeIn }`;
@@ -38,13 +38,15 @@ const CompanyPages = () => {
                         <Icon name='building'/>
                         <Header.Content>Company List</Header.Content>
                     </Header>
+                    <AddCompanyModal show={addCompanyShow} setShow={setAddCompanyShow} setCompanies={setCompanies}/>
+                    <Button primary icon="add" onClick={() => setAddCompanyShow(true)} content="Add Company Page"/>
                     <br/>
-                    <Input
-                        icon={{ name: 'search', circular: true }}
-                        placeholder='Search...'
-                        onChange={e=>setSearch(e.target.value)}
+                    <br/>
+                    <Input fluid
+                           icon={{ name: 'search', circular: true }}
+                           placeholder='Search...'
+                           onChange={e=>setSearch(e.target.value)}
                     />
-                    <br/>
                     <br/>
                 </Container>
 
@@ -52,37 +54,20 @@ const CompanyPages = () => {
 
                     {/* todo : adjust loading spinner place */}
                     {loading ? <Spinner animation="border" /> : <></>}
-                     <AddCompanyModal show={addCompanyShow} setShow={setAddCompanyShow} setCompanies={setCompanies}/>
-                     <button onClick={() => setAddCompanyShow(true)}>Add Company Page</button>
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Company Name</th>
-                            <th>Headquarters</th>
-                            <th>Region</th>
-                            <th>Go to</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                    <Card.Group itemsPerRow={4}>
                         {companies.filter(company => company.name.includes(search)).map((company) => (
-                            <tr key={company.companyId}>
-                                <td>
-                                    <BouncyDiv>
-                                        <Image src={company.logoURL ? company.logoURL : defaultImageUrl} spaced size='mini' verticalAlign='middle'/>{' '}
-                                        <span>{company.name}</span>
-                                    </BouncyDiv>
-                                </td>
-                                <td>{company.headquarters}</td>
-                                <td>{company.region}</td>
-                                <td>
-                                    <Link to={`/company/${company.companyId}`}>View</Link>
-                                </td>
-
-                            </tr>
+                            <Card
+                                image={company.logoURL ? company.logoURL : defaultImageUrl}
+                                header={company.name}
+                                meta={company.region}
+                                description={company.headquarters}
+                                extra={ <div style={{textAlign: "center"}}>
+                                    <Link to={`/company/${company.companyId}`}>View Company</Link>
+                                </div>
+                                }
+                            />
                         ))}
-                        </tbody>
-                    </Table>
-
+                    </Card.Group>
                 </Container>
             </BouncyDiv>
         </Container>
