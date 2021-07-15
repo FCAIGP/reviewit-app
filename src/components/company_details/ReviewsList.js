@@ -4,17 +4,17 @@ import React, {Fragment, useEffect, useState} from "react";
 import AddReviewModal from "../modals/AddReviewModal";
 import {deleteReview, getReviews} from "../../utils/api";
 import {toast} from "react-toastify";
+import Tags from '../Tags'
 
 function ReviewsList(props) {
     const [showAddReview, setShowAddReview] = useState(false)
     const [tagSearch, setTagSearch] = useState("")
     const [reviews, setReviews] = useState([])
-
     const {userId, isAdmin, companyId, token} = props;
 
     const filterReviews = () => {
-        if(!tagSearch) return reviews;
-        return reviews.filter(review => review.tags.some(r => tagSearch.split(',').map(tag => tag.trim()).includes(r)))
+        if(tagSearch.length == 0) return reviews;
+        return reviews.filter(review => review.tags.some(r => tagSearch.map(tag => tag.trim()).includes(r)))
     }
     
     const filteredReviews = filterReviews();
@@ -33,8 +33,7 @@ function ReviewsList(props) {
                             userId = {userId}/>
             
             <div>
-                <label>Search reviews by tags</label>
-                <input value={tagSearch} placeholder="Tags" onChange={e => setTagSearch(e.target.value)}></input>
+                <Tags setTagSearch={setTagSearch}/>
             </div>
             
             <h1>Reviews</h1>
