@@ -14,6 +14,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {handleRenewToken} from './actions/authedUser';
 import 'semantic-ui-css/semantic.min.css';
 import UpdatePost from './components/UpdatePost';
+import ReviewItFooter from './components/ReviewItFooter';
 
 class App extends Component {
 
@@ -37,6 +38,7 @@ class App extends Component {
                             <Route exact path="/claimrequest" component={ClaimRequestList}/>
                         </Switch>
                     </div>
+                    <ReviewItFooter/>
                 </BrowserRouter>
             </div>
         );
