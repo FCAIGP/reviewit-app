@@ -15,6 +15,7 @@ function UserProfile({match}) {
             <p> Current Job: {userInfo.currentJob} </p>
             <p> Date hired: {userInfo.dateHired} </p>
             <p> Bio: {userInfo.bio} </p>
+            <p>Image:{userInfo.image}</p>
         </div>)
 }
 
