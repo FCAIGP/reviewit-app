@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { handleRegister } from '../actions/authedUser';
 import {uploadImages} from '../utils/api'
+import {toast, ToastContainer} from 'react-toastify'
 
 function Register(props) {
     const [userName, setName] = React.useState("");
@@ -40,20 +41,22 @@ function Register(props) {
             };
             if (dto.currentCompanyId === "") dto.currentCompanyId = null;
             dispatch(handleRegister(dto, () => {
+                toast.success("Registered Successfuly!", { position: toast.POSITION.TOP_CENTER })
                 history.push('/login');
+                setImage([])
             }, (e) => {
                 //TODO: show what exactly went wrong
-                alert("bad register attempt");
-                alert(e);
+                toast.error("Registeration Failed!", { position: toast.POSITION.TOP_CENTER })
             }));
         }).catch(()=>{
-            alert("Failed to upload profile image")
+            toast.error("Failed to upload profile image!", { position: toast.POSITION.TOP_CENTER })
         })
     };
     if (loggedIn) return <Redirect to='/' />;
 
     return (
         <div>
+            <ToastContainer autoClose={3000}/>
             <Container>
                 <h1 className="shadow-sm text-success mt-5 p-3 text-center rounded">Register</h1>
                 <Row className="mt-5">
