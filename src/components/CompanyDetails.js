@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import PostsList from './company_details/PostsList';
 import ReviewsList from './company_details/ReviewsList';
 import ClaimRequestModal from "./modals/ClaimRequestModal";
-import {Container, Divider, Button, Image , Header , Icon , Rating} from "semantic-ui-react";
+import {Container, Divider, Button, Image , Header , Icon , Rating, Tab} from "semantic-ui-react";
 import moment from "moment";
 
 export const defaultImageUrl = "https://pinkladies24-7.com/assets/images/defaultimg.png";
@@ -20,6 +20,10 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
 
     const [showClaimRequest, setShowClaimRequest] = useState(false)
 
+    const panes = [
+        { menuItem: 'Posts', render: () => <Tab.Pane><PostsList companyId={company.companyId} ownerId={company.ownerId} userId={userId} token={token}/></Tab.Pane> },
+        { menuItem: 'Reviews', render: () => <Tab.Pane><ReviewsList companyId={company.companyId} userId={userId} isAdmin={isAdmin} token={token}/></Tab.Pane>}
+    ]
     useEffect(() => {
         setLoading(true);
         getCompany(match.params.companyId)
@@ -97,9 +101,8 @@ const CompanyDetails = ({match, token, userId, isAdmin}) => {
                                    token={token}/>
 
                 <br/>
-
-                <PostsList companyId={company.companyId} ownerId={company.ownerId} userId={userId} token={token}/>
-                <ReviewsList companyId={company.companyId} userId={userId} isAdmin={isAdmin} token={token}/>
+                <h6 className="ui small header">What are you looking for?</h6>
+                <Tab panes={panes} />
             </div>
             }
         </Container>
