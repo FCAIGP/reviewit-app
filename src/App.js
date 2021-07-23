@@ -30,6 +30,7 @@ class App extends Component {
                     <div>
                         <Switch>
                             <Route exact path="/" component={Home}/>
+                            <Route exact path="/reviewit-app" component={Home}/>
                             <Route exact path="/login" component={Login}/>
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/company" component={CompanyPages}/>
