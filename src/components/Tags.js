@@ -5,10 +5,10 @@ import 'react-bootstrap-tagsinput/dist/index.css'
 function Tags(props) {
 
     const [tags, setTags] = useState([])
-    const {setTagSearch} = props;
+    const {setTagSearch, values} = props;
     return (
         <div>
-        <InputTags placeholder="Type your tags here to filter reviews" values={tags} onTags={(value) => {
+        <InputTags values={values.length === 0 ? tags : values} onTags={(value) => {
             setTags(value.values)
             setTagSearch(value.values)
             }} />
