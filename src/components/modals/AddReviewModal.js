@@ -3,6 +3,7 @@ import {Button, Form, Modal} from "react-bootstrap";
 import {addReview, predictTagsFor} from "../../utils/api";
 import {toast} from "react-toastify";
 import {StyledGroup, StyledGroup2, StyledHeader} from '../formStyle'
+import Tags from '../Tags'
 
 function AddReviewModal(props) {
 
@@ -12,7 +13,7 @@ function AddReviewModal(props) {
     const [salary, setSalary] = useState('')
     const [jobDescription, setJobDescription] = useState('')
     const [reviewBody, setReviewBody] = useState('')
-    const [reviewTags, setReviewTags] = useState('')
+    const [reviewTags, setReviewTags] = useState([])
     const [isAnonymous, setIsAnonymous] = useState(true)
     const [reviewValidated, setReviewValidated] = useState(false);
     const [typingTimer, setTypingTimer] = useState(null);
@@ -25,7 +26,7 @@ function AddReviewModal(props) {
     }
     const handleTagsAPI = () => {
         predictTagsFor(reviewBody)
-            .then(arr => setReviewTags(arr.join(",")))
+            .then(arr => setReviewTags(arr))
             .catch((e) => console.log(e));
     }
 
@@ -37,14 +38,14 @@ function AddReviewModal(props) {
             e.preventDefault();
             e.stopPropagation();
         } else {
-            addReview(contactInfo, salary, jobDescription, reviewBody, reviewTags.split(','), companyId, isAnonymous, token)
+            addReview(contactInfo, salary, jobDescription, reviewBody, reviewTags, companyId, isAnonymous, token)
                 .then((v) => {
                     setReviews(reviews => [...reviews, v])
                     setReviewBody('')
                     setSalary('')
                     setContactInfo('')
                     setJobDescription('')
-                    setReviewTags('')
+                    setReviewTags([])
                     setIsAnonymous(true)
                     setShow(false)
                     toast.success("Added Review Successfuly!", {position: toast.POSITION.TOP_CENTER})
@@ -89,10 +90,10 @@ function AddReviewModal(props) {
                     </StyledGroup>
                     <StyledGroup>
                         <Form.Label>Tags</Form.Label>
-                        <Form.Control type="text" placeholder="tags seperated by a comma"
-                                      value={reviewTags} onChange={e => setReviewTags(e.target.value)}/>
+                        <Tags setTagSearch = {setReviewTags} values = {reviewTags}/>
+                        {/* <Form.Control type="text" placeholder="tags seperated by a comma"
+                                      value={reviewTags} onChange={e => setReviewTags(e.target.value)}/> */}
                     </StyledGroup>
-
                     {
                         userId &&
                         <StyledGroup>

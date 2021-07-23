@@ -33,7 +33,7 @@ function ReviewsList(props) {
                             userId = {userId}/>
             
             <div>
-                <Tags setTagSearch={setTagSearch}/>
+                <Tags values = {[]} setTagSearch={setTagSearch}/>
             </div>
             
             <h1>Reviews</h1>
